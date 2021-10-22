@@ -65,6 +65,9 @@ inoremap <S-tab> <C-n>
 " <Insert>無効、iに置き換え
 inoremap <Insert> <Esc>i
 
+" Visual modeの開始（Windowsでの<C-v>(貼り付け)に対応）
+nnoremap <A-v> <C-v>
+
 " re-do
 nnoremap r <C-r>
 
