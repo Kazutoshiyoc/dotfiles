@@ -68,14 +68,19 @@ inoremap <Insert> <Esc>i
 " Visual modeの開始（Windowsでの<C-v>(貼り付け)に対応）
 nnoremap <A-v> <C-v>
 
+" インデントの調整
+vnoremap < <gv
+vnoremap > >gv
+
 " re-do
 nnoremap r <C-r>
 
-" 便利ショートカットの設定
-nnoremap <F3> :%s///gc<Left><Left><Left><Left>
-
 " ハイライトOFF
-nnoremap <F4> :noh<CR>:echomsg ""<CR>
+nnoremap <F1> :noh<CR>:echomsg ""<CR>
+
+" 置換ショートカットの設定
+nnoremap <F4> :%s///gc<Left><Left><Left><Left>
+vnoremap <F4> :s///gc<Left><Left><Left><Left>
 
 " ~/.vimrcの明示的な読み込み
 nnoremap <C-F5> :source ~/.vimrc<CR>:noh<CR>:echomsg "reloaded .vimrc"<CR>
@@ -117,6 +122,47 @@ nnoremap <PageUp> <C-Y>
 inoremap <PageUp> <Esc><C-Y>i
 nnoremap <PageDown> <C-E>
 inoremap <PageDown> <Esc><C-E>i
+
+
+" ==================================================================
+" シンタックスの設定
+" ==================================================================
+syntax on
+highlight LineNr ctermfg=95
+highlight CursorLineNr cterm=bold ctermfg=94
+highlight CursorLine cterm=bold ctermbg=254
+nnoremap <F2> :set cursorline!<CR>:echomsg ""<CR>
+nnoremap <F3> :set cursorcolumn!<CR>:echomsg ""<CR>
+inoremap <F2> <Esc>:set cursorline!<CR>:echomsg ""<CR>i
+inoremap <F3> <Esc>:set cursorcolumn!<CR>:echomsg ""<CR>i
+
+highlight Normal cterm=bold ctermfg=0
+highlight Error term=reverse cterm=bold ctermfg=129 ctermbg=9 guifg=White guibg=Red
+highlight Comment ctermfg=67
+highlight SpecialKey ctermfg=252
+
+highlight Include ctermfg=54
+highlight Macro ctermfg=54
+highlight PreCondit ctermfg=104
+
+highlight String ctermfg=19
+highlight SpecialChar ctermfg=25
+highlight Constant ctermfg=125
+highlight Number ctermfg=160
+
+highlight Type ctermfg=34
+highlight Conditional ctermfg=57
+highlight Repeat ctermfg=57
+
+
+" ==================================================================
+" ヤンクした文字列をクリップボードと連携
+" ==================================================================
+if has('win32') || has('win64') || has('mac')
+  set clipboard=unnamed           " Windows, Macの場合はプライマリ("*)と共有
+else
+  set clipboard=unnamedplus       " Linuxの場合はクリップボード（"+）と共有
+endif
 
 
 " ==================================================================
@@ -164,44 +210,3 @@ inoremap <2-RightMouse> <Esc>
 inoremap <3-RightMouse> <Esc>
 inoremap <4-RightMouse> <Esc>
 inoremap <5-RightMouse> <Esc>
-
-
-" ==================================================================
-" シンタックスの設定
-" ==================================================================
-syntax on
-highlight LineNr ctermfg=95
-highlight CursorLineNr cterm=bold ctermfg=94
-highlight CursorLine cterm=bold ctermbg=254
-nnoremap <F1> :set cursorline!<CR>:echomsg ""<CR>
-nnoremap <F2> :set cursorcolumn!<CR>:echomsg ""<CR>
-inoremap <F1> <Esc>:set cursorline!<CR>:echomsg ""<CR>i
-inoremap <F2> <Esc>:set cursorcolumn!<CR>:echomsg ""<CR>i
-
-highlight Normal cterm=bold ctermfg=0
-highlight Error term=reverse cterm=bold ctermfg=129 ctermbg=9 guifg=White guibg=Red
-highlight Comment ctermfg=67
-highlight SpecialKey ctermfg=252
-
-highlight Include ctermfg=54
-highlight Macro ctermfg=54
-highlight PreCondit ctermfg=104
-
-highlight String ctermfg=19
-highlight SpecialChar ctermfg=25
-highlight Constant ctermfg=125
-highlight Number ctermfg=160
-
-highlight Type ctermfg=34
-highlight Conditional ctermfg=57
-highlight Repeat ctermfg=57
-
-
-" ==================================================================
-" ヤンクした文字列をクリップボードと連携
-" ==================================================================
-if has('win32') || has('win64') || has('mac')
-  set clipboard=unnamed           " Windows, Macの場合はプライマリ("*)と共有
-else
-  set clipboard=unnamedplus       " Linuxの場合はクリップボード（"+）と共有
-endif
