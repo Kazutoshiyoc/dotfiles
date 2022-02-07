@@ -75,20 +75,6 @@ vnoremap > >gv
 " re-do
 nnoremap r <C-r>
 
-" ハイライトOFF
-nnoremap <F1> :noh<CR>:echomsg ""<CR>
-
-" 置換ショートカットの設定
-nnoremap <F4> :%s///gc<Left><Left><Left><Left>
-vnoremap <F4> :s///gc<Left><Left><Left><Left>
-
-" ~/.vimrcの明示的な読み込み
-nnoremap <C-F5> :source ~/.vimrc<CR>:noh<CR>:echomsg "reloaded .vimrc"<CR>
-
-" 新規タブ
-nnoremap <F12> :tabnew 
-nnoremap <C-F12> :tabnew<CR>:Explore<CR>:echomsg "Please push the \<Enter\> on the file you want to open."<CR>
-
 " <S-Home>で行頭にカーソル合わせ
 inoremap <S-Home> <Esc>^<Insert>
 nnoremap <S-Home> ^
@@ -125,18 +111,54 @@ inoremap <PageDown> <Esc><C-E>i
 
 
 " ==================================================================
+" Fnキーショートカットの設定
+" ==================================================================
+" ハイライトOFF
+nnoremap <F1> :noh<CR>:set mouse=a<CR>:echomsg ""<CR>
+
+" カーソル行ハイライトのON/OFF
+nnoremap <F2> :set cursorline!<CR>:echomsg ""<CR>
+inoremap <F2> <Esc>:set cursorline!<CR>:echomsg ""<CR>i
+
+" カーソル列ハイライトのON/OFF
+nnoremap <F3> :set cursorcolumn!<CR>:echomsg ""<CR>
+inoremap <F3> <Esc>:set cursorcolumn!<CR>:echomsg ""<CR>i
+
+" 置換ショートカットの設定
+nnoremap <F4> :%s///gc<Left><Left><Left><Left><C-r><C-w><Right>
+vnoremap <F4> :s///gc<Left><Left><Left><Left>
+
+" ~/.vimrcの明示的な読み込み
+nnoremap <C-F5> :source ~/.vimrc<CR>:noh<CR>:echomsg "reloaded .vimrc"<CR>
+
+" git difftoolにvimdiffを設定している場合に差分情報を表示/終了
+nnoremap <F6> :!git difftool %:p<CR><CR>
+if &diff
+	nnoremap <F6> :qa<CR>
+	nnoremap :q :qa<CR>
+endif
+
+" 新規タブ
+nnoremap <F12> :tabnew 
+nnoremap <C-F12> :tabnew<CR>:Explore<CR>:echomsg "Please push the \<Enter\> on the file you want to open."<CR>
+
+
+" ==================================================================
 " シンタックスの設定
 " ==================================================================
 syntax on
-highlight LineNr ctermfg=95
-highlight CursorLineNr cterm=bold ctermfg=94
-highlight CursorLine cterm=bold ctermbg=254
-nnoremap <F2> :set cursorline!<CR>:echomsg ""<CR>
-nnoremap <F3> :set cursorcolumn!<CR>:echomsg ""<CR>
-inoremap <F2> <Esc>:set cursorline!<CR>:echomsg ""<CR>i
-inoremap <F3> <Esc>:set cursorcolumn!<CR>:echomsg ""<CR>i
 
-highlight Normal cterm=bold ctermfg=0
+" 行番号
+highlight LineNr ctermfg=95
+
+" カーソル行
+highlight CursorLine cterm=bold ctermbg=254
+highlight CursorLineNr cterm=bold ctermfg=130
+
+" カーソル列
+highlight CursorColumn cterm=bold ctermbg=253
+
+highlight Normal cterm=bold ctermfg=0 ctermbg=255
 highlight Error term=reverse cterm=bold ctermfg=129 ctermbg=9 guifg=White guibg=Red
 highlight Comment ctermfg=67
 highlight SpecialKey ctermfg=252
@@ -153,6 +175,15 @@ highlight Number ctermfg=160
 highlight Type ctermfg=34
 highlight Conditional ctermfg=57
 highlight Repeat ctermfg=57
+
+" vimdiff
+highlight DiffAdd ctermbg=121
+highlight DiffDelete ctermbg=217
+highlight DiffChange ctermbg=123
+highlight DiffText cterm=bold ctermfg=0 ctermbg=123
+
+" Visualモード
+highlight Visual ctermbg=251
 
 
 " ==================================================================
