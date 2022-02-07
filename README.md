@@ -15,6 +15,8 @@ $ git config --global difftool.prompt false
 $ vi ~/.gitconfig
 
 	# Remove the below lines
+	[diff]
 		tool = vimdiff
+	[difftool]
 		prompt = false
 ```
