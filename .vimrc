@@ -158,7 +158,7 @@ highlight CursorLineNr cterm=bold ctermfg=130
 " カーソル列
 highlight CursorColumn cterm=bold ctermbg=253
 
-highlight Normal cterm=bold ctermfg=0 ctermbg=255
+highlight Normal cterm=bold ctermfg=0
 highlight Error term=reverse cterm=bold ctermfg=129 ctermbg=9 guifg=White guibg=Red
 highlight Comment ctermfg=67
 highlight SpecialKey ctermfg=252
