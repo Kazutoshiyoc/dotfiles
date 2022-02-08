@@ -180,7 +180,7 @@ highlight Repeat ctermfg=57
 highlight DiffAdd ctermbg=121
 highlight DiffDelete ctermbg=217
 highlight DiffChange ctermbg=123
-highlight DiffText cterm=bold ctermfg=0 ctermbg=123
+highlight DiffText cterm=bold ctermfg=201 ctermbg=123
 
 " Visualモード
 highlight Visual ctermbg=251
