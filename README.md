@@ -20,3 +20,14 @@ $ vi ~/.gitconfig
 	[difftool]
 		prompt = false
 ```
+```
+[ Set alias of git command ]
+$ git config --global alias.st status
+
+[ Un-Set alias of git command ]
+$ vi ~/.gitconfig
+
+	# Remove the below lines
+	[alias]
+		st = status
+```
