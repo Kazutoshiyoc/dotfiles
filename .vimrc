@@ -76,6 +76,9 @@ vnoremap > >gv
 " re-do
 nnoremap r <C-r>
 
+" 単語単位での移動
+nnoremap <S-w> b
+
 " <S-Home>で行頭にカーソル合わせ
 inoremap <S-Home> <Esc>^<Insert>
 nnoremap <S-Home> ^
