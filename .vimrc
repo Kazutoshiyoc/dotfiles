@@ -76,8 +76,11 @@ vnoremap > >gv
 " re-do
 nnoremap r <C-r>
 
-" 単語単位での移動
-nnoremap <S-w> b
+" vimdiffの変更行検索
+if &diff
+	nnoremap c ]c
+	nnoremap <S-c> [c
+endif
 
 " <S-Home>で行頭にカーソル合わせ
 inoremap <S-Home> <Esc>^<Insert>
@@ -102,10 +105,6 @@ nnoremap <S-Down> <Down><Down><Down><Down><Down>
 inoremap <S-Down> <Down><Down><Down><Down><Down>
 nnoremap <C-Down> <Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down>
 inoremap <C-Down> <Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down><Down>
-nnoremap <S-Right> <S-Right><S-Right><S-Right><S-Right><S-Right>
-inoremap <S-Right> <S-Right><S-Right><S-Right><S-Right><S-Right>
-nnoremap <S-Left> <S-Left><S-Left><S-Left><S-Left><S-Left>
-inoremap <S-Left> <S-Left><S-Left><S-Left><S-Left><S-Left>
 
 " <PageUp><PageDown>で画面スクロール
 nnoremap <PageUp> <C-Y>
@@ -215,17 +214,6 @@ nnoremap <2-LeftMouse> <S-LeftMouse>N<Esc>
 nnoremap <3-LeftMouse> <S-LeftMouse>N<Esc>
 nnoremap <4-LeftMouse> <S-LeftMouse>N<Esc>
 nnoremap <5-LeftMouse> <S-LeftMouse>N<Esc>
-
-vnoremap <LeftMouse> <Esc>
-vnoremap <2-LeftMouse> <S-LeftMouse>N<Esc>
-vnoremap <3-LeftMouse> <S-LeftMouse>N<Esc>
-vnoremap <4-LeftMouse> <S-LeftMouse>N<Esc>
-vnoremap <5-LeftMouse> <S-LeftMouse>N<Esc>
-
-inoremap <2-LeftMouse> <S-LeftMouse><Esc>N<Esc>i
-inoremap <3-LeftMouse> <S-LeftMouse><Esc>N<Esc>i
-inoremap <4-LeftMouse> <S-LeftMouse><Esc>N<Esc>i
-inoremap <5-LeftMouse> <S-LeftMouse><Esc>N<Esc>i
 
 " 右クリックは動作が変になるので無効化
 nnoremap <RightMouse> <Esc>
