@@ -1,3 +1,5 @@
+set nocompatible                 " vi互換モードの無効化
+
 scriptencoding utf-8
 set encoding=utf-8
 set fileencoding=utf-8
@@ -55,7 +57,7 @@ inoremap () ()<Left>
 inoremap ( ()<Left>
 
 inoremap ()<Enter> ();<Left><Left>
-inoremap (<Enter> ();<Left><Left>
+inoremap (<Enter> ("\n");<Left><Left><Left><Left><Left>
 
 inoremap [] []<Left>
 inoremap [ []<Left>
@@ -75,6 +77,9 @@ vnoremap > >gv
 
 " re-do
 nnoremap r <C-r>
+
+" カーソル下の単語検索の際にカーソル行を維持
+nnoremap * *N
 
 " vimdiffの変更行検索
 if &diff
@@ -213,23 +218,19 @@ nnoremap <LeftMouse> <Esc>
 nnoremap <2-LeftMouse> <S-LeftMouse>N<Esc>
 nnoremap <3-LeftMouse> <S-LeftMouse>N<Esc>
 nnoremap <4-LeftMouse> <S-LeftMouse>N<Esc>
-nnoremap <5-LeftMouse> <S-LeftMouse>N<Esc>
 
 " 右クリックは動作が変になるので無効化
 nnoremap <RightMouse> <Esc>
 nnoremap <2-RightMouse> <Esc>
 nnoremap <3-RightMouse> <Esc>
 nnoremap <4-RightMouse> <Esc>
-nnoremap <5-RightMouse> <Esc>
 
 vnoremap <RightMouse> <Esc>
 vnoremap <2-RightMouse> <Esc>
 vnoremap <3-RightMouse> <Esc>
 vnoremap <4-RightMouse> <Esc>
-vnoremap <5-RightMouse> <Esc>
 
 inoremap <RightMouse> <Esc>
 inoremap <2-RightMouse> <Esc>
 inoremap <3-RightMouse> <Esc>
 inoremap <4-RightMouse> <Esc>
-inoremap <5-RightMouse> <Esc>
