@@ -146,6 +146,12 @@ if &diff
 	nnoremap :q :qa<CR>
 endif
 
+" カラーテーマ／コントラストの切替
+nnoremap <F8> :call ToggleContrast(g:contrast_mode)<CR>
+inoremap <F8> <Esc>:call ToggleContrast(g:contrast_mode)<CR><Right>i
+nnoremap <S-F8> :call ToggleHighlight(g:mode)<CR>
+inoremap <S-F8> <Esc>:call ToggleHighlight(g:mode)<CR><Right>i
+
 " 新規タブ
 nnoremap <F12> :tabnew 
 nnoremap <C-F12> :tabnew<CR>:Explore<CR>:echomsg "Please push the \<Enter\> on the file you want to open."<CR>
@@ -154,44 +160,467 @@ nnoremap <C-F12> :tabnew<CR>:Explore<CR>:echomsg "Please push the \<Enter\> on t
 " ==================================================================
 " シンタックスの設定
 " ==================================================================
-syntax on
+" 動作モード
+let g:mode = "dark"
 
-" 行番号
-highlight LineNr ctermfg=95
+" 色の定義
+let s:white255 = { "cterm": "255", "gui": "#eeeeee"}
+let s:white254 = { "cterm": "254", "gui": "#e4e4e4"}
+let s:white253 = { "cterm": "253", "gui": "#dadada"}
+let s:white252 = { "cterm": "252", "gui": "#d0d0d0"}
+let s:white251 = { "cterm": "251", "gui": "#c6c6c6"}
+let s:white = { "cterm": "250", "gui": "#d7d7d7"}
+let s:black = { "cterm": "235", "gui": "#262626"}
+let s:black2 = { "cterm": "234", "gui": "#1c1c1c"}
+let s:boldBlack = { "cterm": "16", "gui": "#000000"}
 
-" カーソル行
-highlight CursorLine cterm=bold ctermbg=254
-highlight CursorLineNr cterm=bold ctermfg=130
+let s:gray  = { "cterm": "237", "gui": "#3a3a3a"}
+let s:gray2 = { "cterm": "238", "gui": "#444444"}
+let s:gray3 = { "cterm": "239", "gui": "#4e4e4e"}
+let s:gray4 = { "cterm": "240", "gui": "#585858"}
+let s:gray5 = { "cterm": "241", "gui": "#606060"}
+let s:gray6 = { "cterm": "242", "gui": "#666666"}
+let s:gray7 = { "cterm": "243", "gui": "#767676"}
+let s:gray8 = { "cterm": "244", "gui": "#808080"}
+let s:gray9 = { "cterm": "245", "gui": "#8a8a8a"}
+let s:lightGray  = { "cterm": "246", "gui": "#949494"}
+let s:lightGray2 = { "cterm": "247", "gui": "#9e9e9e"}
+let s:lightGray3 = { "cterm": "248", "gui": "#a8a8a8"}
+let s:lightGray4 = { "cterm": "249", "gui": "#b2b2b2"}
 
-" カーソル列
-highlight CursorColumn cterm=bold ctermbg=253
+let s:blue        = { "cterm": "32", "gui": "#0087d7"}
+let s:darkBlue    = { "cterm": "19", "gui": "#0000af"}
+let s:lightBlue   = { "cterm": "67", "gui": "#5f87af"}
+let s:diluteBlue  = { "cterm": "24", "gui": "#0087d7"}
+let s:diluteBlue2 = { "cterm": "25", "gui": "#005faf"}
+let s:blueGreen   = { "cterm": "37", "gui": "#00afaf"}
 
-highlight Normal cterm=bold ctermfg=0
-highlight Error term=reverse cterm=bold ctermfg=129 ctermbg=9 guifg=White guibg=Red
-highlight Comment ctermfg=67
-highlight SpecialKey ctermfg=252
+let s:darkCyan  = { "cterm": "73", "gui": "#5fafaf"}
+let s:lightCyan = { "cterm": "123", "gui": "#87ffff"}
 
-highlight Include ctermfg=54
-highlight Macro ctermfg=54
-highlight PreCondit ctermfg=104
+let s:green       = { "cterm": "35", "gui": "#00af5f"}
+let s:darkGreen   = { "cterm": "22", "gui": "#005f00"}
+let s:lightGreen  = { "cterm": "157", "gui": "#afffaf"}
+let s:lightGreen2 = { "cterm": "121", "gui": "#87ffaf"}
+let s:leafGreen   = { "cterm": "34", "gui": "#00af00"}
 
-highlight String ctermfg=19
-highlight SpecialChar ctermfg=25
-highlight Constant ctermfg=125
-highlight Number ctermfg=160
+let s:purple       = { "cterm": "135", "gui": "#af5fff"}
+let s:darkPurple   = { "cterm": "54", "gui": "#5f0087"}
+let s:lightPurple  = { "cterm": "104", "gui": "#8787d7"}
+let s:dilutePurple = { "cterm": "60", "gui": "#0087d7"}
+let s:redPurple    = { "cterm": "141", "gui": "#af87ff"}
+let s:bluePurple   = { "cterm": "104", "gui": "#8787d7"}
+let s:bluePurple2  = { "cterm": "57", "gui": "#5f00ff"}
 
-highlight Type ctermfg=34
-highlight Conditional ctermfg=57
-highlight Repeat ctermfg=57
+let s:lightPink = { "cterm": "225", "gui": "#ffd7ff"}
 
-" vimdiff
-highlight DiffAdd ctermbg=121
-highlight DiffDelete ctermbg=217
-highlight DiffChange ctermbg=123
-highlight DiffText cterm=bold ctermfg=201 ctermbg=123
+let s:magenta      = { "cterm": "125", "gui": "#af005f"}
+let s:lightMagenta = { "cterm": "201", "gui": "#ff00ff"}
 
-" Visualモード
-highlight Visual ctermbg=251
+let s:red     = { "cterm": "160", "gui": "#d70000"}
+let s:darkRed = { "cterm": "95", "gui": "#875f5f"}
+
+let s:vermilion      = { "cterm": "203", "gui": "#ff5f5f"}
+let s:lightVermilion = { "cterm": "217", "gui": "#ffafaf"}
+
+let s:orange       = { "cterm": "130", "gui": "#af5f00"}
+let s:diluteOrange = { "cterm": "94", "gui": "#af5f00"}
+
+" ---------------------------------
+" シンタックス設定関数
+" ---------------------------------
+function! s:setHighlight(group, fg, bg, attribute)
+	" a:fgが辞書型の場合
+	if type(a:fg) == type({})
+		execute "highlight " . a:group
+			\. " ctermfg=" . a:fg.cterm . " guifg="   . a:fg.gui
+			\. " "         . a:attribute
+	" a:fgが辞書型以外の場合
+	else
+		execute "highlight " . a:group
+			\. " ctermfg=NONE guifg=NONE"
+			\. " "         . a:attribute
+	endif
+	" a:bgが辞書型の場合
+	if type(a:bg) == type({})
+		execute "highlight " . a:group
+			\. " ctermbg=" . a:bg.cterm . " guibg=" . a:bg.gui
+			\. " "         . a:attribute
+	" a:bgが辞書型以外の場合
+	else
+		execute "highlight " . a:group
+			\. " ctermbg=NONE guibg=NONE"
+			\. " "         . a:attribute
+	endif
+endfunction
+
+" ---------------------------------
+" シンタックス設定関数
+" ---------------------------------
+function! InitHighlight(mode)
+
+	let g:contrast_mode = "low"
+
+	" ダークモード
+	if a:mode == "dark"
+		call SetDefaultDark()
+	endif
+
+	" ライトモード
+	if a:mode == "light"
+		call SetDefaultLight()
+	endif
+
+endfunction
+" --------------------------
+function! ToggleHighlight(mode)
+
+	" ダークモード -> ライトモード
+	if a:mode == "dark"
+		let g:mode = "light"
+		call InitHighlight(g:mode)
+	endif
+
+	" ライトモード -> ダークモード
+	if a:mode == "light"
+		let g:mode = "dark"
+		call InitHighlight(g:mode)
+	endif
+
+endfunction
+" --------------------------
+function! SetHighContrast(mode)
+
+	" ダークモード
+	if a:mode == "dark"
+		call SetHighContrastDark()
+	endif
+
+	" ライトモード
+	if a:mode == "light"
+		call SetHighContrastLight()
+	endif
+
+endfunction
+" --------------------------
+function! ToggleContrast(contrast_mode)
+
+	" high -> low
+	if a:contrast_mode == "high"
+		let g:contrast_mode = "low"
+		call InitHighlight(g:mode)
+	endif
+
+	" low -> high
+	if a:contrast_mode == "low"
+		let g:contrast_mode = "high"
+		call SetHighContrast(g:mode)
+	endif
+
+endfunction
+
+" ---------------------------------
+" カラースキーム
+" ---------------------------------
+function! SetDefaultDark()
+
+	let g:mode = "dark"
+
+	" デフォルトカラーの定義
+	let s:fg    = s:white
+	let s:bg    = s:black
+	let s:cursorBg = s:gray
+
+	" カラーテーマの設定
+	set background=dark
+	highlight clear
+	syntax reset
+
+	" 行番号
+	call s:setHighlight("LineNr", s:gray4, s:bg, "cterm=bold")
+	call s:setHighlight("CursorLineNr", s:orange, s:bg, "cterm=bold")
+
+	" カーソル行／列
+	call s:setHighlight("CursorLine",   "", s:cursorBg, "cterm=bold")
+	call s:setHighlight("CursorColumn", "", s:cursorBg, "cterm=bold")
+
+	" 文字
+	call s:setHighlight("Normal", s:fg, s:bg, "")
+	call s:setHighlight("Visual", "", s:gray, "cterm=bold")
+
+	" 文字列
+	call s:setHighlight("Comment", s:gray7, s:bg, "")
+	call s:setHighlight("String",  s:blue, s:bg, "")
+
+	" 記号／特殊文字
+	call s:setHighlight("SpecialKey", s:gray2, s:bg, "")
+	call s:setHighlight("SpecialChar", s:blueGreen, s:bg, "")
+
+	" プリプロセッサ命令
+	call s:setHighlight("PreProc", s:dilutePurple, s:bg, "")
+	call s:setHighlight("Include", s:purple, s:bg, "")
+	call s:setHighlight("Macro",   s:purple, s:bg, "")
+	call s:setHighlight("PreCondit", s:bluePurple, s:bg, "")
+
+	" if, for, while, do
+	call s:setHighlight("Conditional", s:redPurple, s:bg, "")
+	call s:setHighlight("Repeat", s:redPurple, s:bg, "")
+
+	" 型
+	call s:setHighlight("Type", s:green, s:bg, "")
+
+	" 定数
+	call s:setHighlight("Constant", s:magenta, s:bg, "")
+	call s:setHighlight("Number", s:vermilion, s:bg, "")
+
+	" シェルスクリプト
+	call s:setHighlight("shShellVariables", s:blueGreen, s:bg, "")
+	call s:setHighlight("shSetList", s:green, s:bg, "")
+
+	" Pmenu
+	call s:setHighlight("Pmenu", s:boldBlack, s:gray3, "")
+	call s:setHighlight("PmenuSel", s:boldBlack, s:lightGreen2, "")
+
+	" 検索
+	call s:setHighlight("Search", s:fg, s:diluteBlue2, "term=reverse")
+
+	" Vim statusline
+	call s:setHighlight("ErrorMsg", s:white255, s:red, "term=standout")
+	call s:setHighlight("MoreMsg", s:leafGreen, s:bg, "term=bold")
+	call s:setHighlight("Question", s:leafGreen, s:bg, "term=standout")
+
+	" vimdiff
+	call s:setHighlight("DiffAdd", s:lightGreen, s:darkGreen, "")
+	call s:setHighlight("DiffDelete", s:lightPink, s:darkRed, "")
+	call s:setHighlight("DiffChange", s:boldBlack, s:darkCyan, "")
+	call s:setHighlight("DiffText", s:lightMagenta, s:lightCyan, "cterm=bold")
+
+	" netrw
+	call s:setHighlight("netrwDir", s:blue, s:bg, "cterm=bold")
+	call s:setHighlight("netrwExe", s:green, s:bg, "cterm=bold")
+	call s:setHighlight("netrwClassify", s:blueGreen, s:bg, "cterm=bold")
+
+endfunction
+
+" --------------------------
+function! SetDefaultLight()
+
+	let g:mode = "light"
+
+	" デフォルトカラーの定義
+	let s:fg    = s:boldBlack
+	let s:bg    = s:white253
+	let s:cursorBg = s:white252
+
+	" カラーテーマの設定
+	set background=light
+	highlight clear
+	syntax reset
+
+	" 行番号
+	call s:setHighlight("LineNr", s:darkRed, s:bg, "")
+	call s:setHighlight("CursorLineNr", s:orange, s:bg, "cterm=bold")
+
+	" カーソル行／列
+	call s:setHighlight("CursorLine",   "", s:cursorBg, "cterm=bold")
+	call s:setHighlight("CursorColumn", "", s:cursorBg, "cterm=bold")
+
+	" 文字
+	call s:setHighlight("Normal", s:fg, s:bg, "")
+	call s:setHighlight("Visual", "", s:white251, "")
+
+	" 文字列
+	call s:setHighlight("Comment", s:lightBlue, s:bg, "")
+	call s:setHighlight("String",  s:darkBlue, s:bg, "")
+
+	" 記号／特殊文字
+	call s:setHighlight("SpecialKey", s:white251, s:bg, "")
+	call s:setHighlight("SpecialChar", s:diluteBlue2, s:bg, "")
+
+	" プリプロセッサ命令
+	call s:setHighlight("Include", s:darkPurple, s:bg, "")
+	call s:setHighlight("Macro",   s:darkPurple, s:bg, "")
+	call s:setHighlight("PreCondit", s:lightPurple, s:bg, "")
+
+	" if, for, while, do
+	call s:setHighlight("Conditional", s:bluePurple2, s:bg, "")
+	call s:setHighlight("Repeat", s:bluePurple2, s:bg, "")
+
+	" 型
+	call s:setHighlight("Type", s:leafGreen, s:bg, "")
+
+	" 定数
+	call s:setHighlight("Constant", s:magenta, s:bg, "")
+	call s:setHighlight("Number", s:red, s:bg, "")
+
+	" シェルスクリプト
+	call s:setHighlight("shShellVariables", s:blueGreen, s:bg, "")
+	call s:setHighlight("shSetList", s:blue, s:bg, "")
+
+	" vimdiff
+	call s:setHighlight("DiffAdd", "", s:lightGreen2, "")
+	call s:setHighlight("DiffDelete", "", s:lightVermilion, "")
+	call s:setHighlight("DiffChange", "", s:lightCyan, "")
+	call s:setHighlight("DiffText", s:lightMagenta, s:lightCyan, "cterm=bold")
+
+	" netrw
+	call s:setHighlight("netrwDir", s:darkBlue, s:bg, "cterm=bold")
+	call s:setHighlight("netrwExe", s:leafGreen, s:bg, "cterm=bold")
+	call s:setHighlight("netrwClassify", s:blueGreen, s:bg, "cterm=bold")
+
+endfunction
+
+" ---------------------------------
+" ハイコントラストテーマ
+" ---------------------------------
+function! SetHighContrastDark()
+
+	" デフォルトカラーの定義
+	let s:fg    = s:white
+	let s:bg    = s:black2
+	let s:cursorBg = s:gray
+
+	" カラーテーマの設定
+	set background=dark
+	highlight clear
+	syntax reset
+
+	" 行番号
+	call s:setHighlight("LineNr", s:gray4, s:bg, "cterm=bold")
+	call s:setHighlight("CursorLineNr", s:orange, s:bg, "cterm=bold")
+
+	" カーソル行／列
+	call s:setHighlight("CursorLine",   "", s:cursorBg, "cterm=bold")
+	call s:setHighlight("CursorColumn", "", s:cursorBg, "cterm=bold")
+
+	" 文字
+	call s:setHighlight("Normal", s:fg, s:bg, "cterm=bold")
+	call s:setHighlight("Visual", "", s:gray, "cterm=bold")
+
+	" 文字列
+	call s:setHighlight("Comment", s:gray7, s:bg, "")
+	call s:setHighlight("String",  s:blue, s:bg, "")
+
+	" 記号／特殊文字
+	call s:setHighlight("SpecialKey", s:gray2, s:bg, "")
+	call s:setHighlight("SpecialChar", s:blueGreen, s:bg, "")
+
+	" プリプロセッサ命令
+	call s:setHighlight("PreProc", s:dilutePurple, s:bg, "")
+	call s:setHighlight("Include", s:purple, s:bg, "")
+	call s:setHighlight("Macro",   s:purple, s:bg, "")
+	call s:setHighlight("PreCondit", s:bluePurple, s:bg, "")
+
+	" if, for, while, do
+	call s:setHighlight("Conditional", s:redPurple, s:bg, "")
+	call s:setHighlight("Repeat", s:redPurple, s:bg, "")
+
+	" 型
+	call s:setHighlight("Type", s:green, s:bg, "")
+
+	" 定数
+	call s:setHighlight("Constant", s:magenta, s:bg, "")
+	call s:setHighlight("Number", s:vermilion, s:bg, "")
+
+	" シェルスクリプト
+	call s:setHighlight("shShellVariables", s:blueGreen, s:bg, "")
+	call s:setHighlight("shSetList", s:green, s:bg, "")
+
+	" Pmenu
+	call s:setHighlight("Pmenu", s:boldBlack, s:gray3, "")
+	call s:setHighlight("PmenuSel", s:boldBlack, s:lightGreen2, "")
+
+	" 検索
+	call s:setHighlight("Search", s:fg, s:diluteBlue2, "term=reverse")
+
+	" Vim statusline
+	call s:setHighlight("ErrorMsg", s:white255, s:red, "term=standout")
+	call s:setHighlight("MoreMsg", s:leafGreen, s:bg, "term=bold")
+	call s:setHighlight("Question", s:leafGreen, s:bg, "term=standout")
+
+	" vimdiff
+	call s:setHighlight("DiffAdd", s:lightGreen, s:darkGreen, "")
+	call s:setHighlight("DiffDelete", s:lightPink, s:darkRed, "")
+	call s:setHighlight("DiffChange", s:boldBlack, s:darkCyan, "")
+	call s:setHighlight("DiffText", s:lightMagenta, s:lightCyan, "cterm=bold")
+
+	" netrw
+	call s:setHighlight("netrwDir", s:blue, s:bg, "cterm=bold")
+	call s:setHighlight("netrwExe", s:green, s:bg, "cterm=bold")
+	call s:setHighlight("netrwClassify", s:blueGreen, s:bg, "cterm=bold")
+
+endfunction
+
+" --------------------------
+function! SetHighContrastLight()
+
+	" デフォルトカラーの定義
+	let s:fg    = s:boldBlack
+	let s:bg    = s:white255
+	let s:cursorBg = s:white254
+
+	" カラーテーマの設定
+	set background=light
+	highlight clear
+	syntax reset
+
+	" 行番号
+	call s:setHighlight("LineNr", s:darkRed, s:bg, "")
+	call s:setHighlight("CursorLineNr", s:orange, s:bg, "cterm=bold")
+
+	" カーソル行／列
+	call s:setHighlight("CursorLine",   "", s:cursorBg, "cterm=bold")
+	call s:setHighlight("CursorColumn", "", s:cursorBg, "cterm=bold")
+
+	" 文字
+	call s:setHighlight("Normal", s:fg, s:bg, "")
+	call s:setHighlight("Visual", "", s:white251, "")
+
+	" 文字列
+	call s:setHighlight("Comment", s:lightBlue, s:bg, "")
+	call s:setHighlight("String",  s:darkBlue, s:bg, "")
+
+	" 記号／特殊文字
+	call s:setHighlight("SpecialKey", s:white252, s:bg, "")
+	call s:setHighlight("SpecialChar", s:diluteBlue2, s:bg, "")
+
+	" プリプロセッサ命令
+	call s:setHighlight("Include", s:darkPurple, s:bg, "")
+	call s:setHighlight("Macro",   s:darkPurple, s:bg, "")
+	call s:setHighlight("PreCondit", s:lightPurple, s:bg, "")
+
+	" if, for, while, do
+	call s:setHighlight("Conditional", s:bluePurple2, s:bg, "")
+	call s:setHighlight("Repeat", s:bluePurple2, s:bg, "")
+
+	" 型
+	call s:setHighlight("Type", s:leafGreen, s:bg, "")
+
+	" 定数
+	call s:setHighlight("Constant", s:magenta, s:bg, "")
+	call s:setHighlight("Number", s:red, s:bg, "")
+
+	" シェルスクリプト
+	call s:setHighlight("shShellVariables", s:blueGreen, s:bg, "")
+	call s:setHighlight("shSetList", s:blue, s:bg, "")
+
+	" vimdiff
+	call s:setHighlight("DiffAdd", "", s:lightGreen2, "")
+	call s:setHighlight("DiffDelete", "", s:lightVermilion, "")
+	call s:setHighlight("DiffChange", "", s:lightCyan, "")
+	call s:setHighlight("DiffText", s:lightMagenta, s:lightCyan, "cterm=bold")
+
+	" netrw
+	call s:setHighlight("netrwDir", s:darkBlue, s:bg, "cterm=bold")
+	call s:setHighlight("netrwExe", s:leafGreen, s:bg, "cterm=bold")
+	call s:setHighlight("netrwClassify", s:blueGreen, s:bg, "cterm=bold")
+
+endfunction
+
+" ---------------------------------
+" 初期化処理
+" ---------------------------------
+call InitHighlight(g:mode)
 
 
 " ==================================================================
