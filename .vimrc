@@ -83,8 +83,8 @@ nnoremap * *N
 
 " vimdiffの変更行検索
 if &diff
-	nnoremap c ]c
-	nnoremap <S-c> [c
+	nnoremap c ]c]ck
+	nnoremap <S-c> [ck
 endif
 
 " <S-Home>で行頭にカーソル合わせ
@@ -146,11 +146,16 @@ if &diff
 	nnoremap :q :qa<CR>
 endif
 
+" ハイライトグループの確認
+nnoremap <F7> :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
+
 " カラーテーマ／コントラストの切替
-nnoremap <F8> :call ToggleContrast(g:contrast_mode)<CR>
-inoremap <F8> <Esc>:call ToggleContrast(g:contrast_mode)<CR><Right>i
-nnoremap <S-F8> :call ToggleHighlight(g:mode)<CR>
-inoremap <S-F8> <Esc>:call ToggleHighlight(g:mode)<CR><Right>i
+nnoremap <F8> :source ~/.vimrc<CR>:noh<CR>:echomsg ""<CR>
+inoremap <F8> <Esc>:source ~/.vimrc<CR>:noh<CR>:echomsg ""<CR>i
+nnoremap <S-F8> :call ToggleContrast(g:contrast_mode)<CR>
+inoremap <S-F8> <Esc>:call ToggleContrast(g:contrast_mode)<CR><Right>i
+nnoremap <C-F8> :call ToggleHighlight(g:mode)<CR>
+inoremap <C-F8> <Esc>:call ToggleHighlight(g:mode)<CR><Right>i
 
 " 新規タブ
 nnoremap <F12> :tabnew 
@@ -160,10 +165,25 @@ nnoremap <C-F12> :tabnew<CR>:Explore<CR>:echomsg "Please push the \<Enter\> on t
 " ==================================================================
 " シンタックスの設定
 " ==================================================================
+"syntax reset
+
+" ユーザ定義シンタックス
+function! SetMySyntax()
+	" Operators
+	syntax match cUserOperator "&&\|||"
+	syntax match cUserOperator2 "<=\|>=\|<\|>\|==\|!=\|->"
+	syntax match cUserOperator3 "(\|)\|{\|}\|\[\|\]"
+	syntax match cUserOperator3 ",\|;"
+
+	"UserFunction
+	syntax match cUserFunction "\<\h\w*\>\(\s\|\n\)*("me=e-1 contains=cType,cDelimiter,cDefine
+endfunction
+
 " 動作モード
 let g:mode = "dark"
 
 " 色の定義
+" 白/黒
 let s:white255 = { "cterm": "255", "gui": "#eeeeee"}
 let s:white254 = { "cterm": "254", "gui": "#e4e4e4"}
 let s:white253 = { "cterm": "253", "gui": "#dadada"}
@@ -173,7 +193,7 @@ let s:white = { "cterm": "250", "gui": "#d7d7d7"}
 let s:black = { "cterm": "235", "gui": "#262626"}
 let s:black2 = { "cterm": "234", "gui": "#1c1c1c"}
 let s:boldBlack = { "cterm": "16", "gui": "#000000"}
-
+" 灰
 let s:gray  = { "cterm": "237", "gui": "#3a3a3a"}
 let s:gray2 = { "cterm": "238", "gui": "#444444"}
 let s:gray3 = { "cterm": "239", "gui": "#4e4e4e"}
@@ -187,23 +207,23 @@ let s:lightGray  = { "cterm": "246", "gui": "#949494"}
 let s:lightGray2 = { "cterm": "247", "gui": "#9e9e9e"}
 let s:lightGray3 = { "cterm": "248", "gui": "#a8a8a8"}
 let s:lightGray4 = { "cterm": "249", "gui": "#b2b2b2"}
-
+" 青
 let s:blue        = { "cterm": "32", "gui": "#0087d7"}
 let s:darkBlue    = { "cterm": "19", "gui": "#0000af"}
 let s:lightBlue   = { "cterm": "67", "gui": "#5f87af"}
 let s:diluteBlue  = { "cterm": "24", "gui": "#0087d7"}
 let s:diluteBlue2 = { "cterm": "25", "gui": "#005faf"}
 let s:blueGreen   = { "cterm": "37", "gui": "#00afaf"}
-
-let s:darkCyan  = { "cterm": "73", "gui": "#5fafaf"}
-let s:lightCyan = { "cterm": "123", "gui": "#87ffff"}
-
+let s:darkCyan   = { "cterm": "73", "gui": "#5fafaf"}
+let s:lightCyan  = { "cterm": "123", "gui": "#87ffff"}
+let s:lightCyan2 = { "cterm": "152", "gui": "#afd7d7"}
+" 緑
 let s:green       = { "cterm": "35", "gui": "#00af5f"}
 let s:darkGreen   = { "cterm": "22", "gui": "#005f00"}
 let s:lightGreen  = { "cterm": "157", "gui": "#afffaf"}
 let s:lightGreen2 = { "cterm": "121", "gui": "#87ffaf"}
 let s:leafGreen   = { "cterm": "34", "gui": "#00af00"}
-
+" 紫
 let s:purple       = { "cterm": "135", "gui": "#af5fff"}
 let s:darkPurple   = { "cterm": "54", "gui": "#5f0087"}
 let s:lightPurple  = { "cterm": "104", "gui": "#8787d7"}
@@ -211,19 +231,18 @@ let s:dilutePurple = { "cterm": "60", "gui": "#0087d7"}
 let s:redPurple    = { "cterm": "141", "gui": "#af87ff"}
 let s:bluePurple   = { "cterm": "104", "gui": "#8787d7"}
 let s:bluePurple2  = { "cterm": "57", "gui": "#5f00ff"}
-
 let s:lightPink = { "cterm": "225", "gui": "#ffd7ff"}
-
-let s:magenta      = { "cterm": "125", "gui": "#af005f"}
-let s:lightMagenta = { "cterm": "201", "gui": "#ff00ff"}
-
+" 赤
 let s:red     = { "cterm": "160", "gui": "#d70000"}
 let s:darkRed = { "cterm": "95", "gui": "#875f5f"}
-
+let s:magenta      = { "cterm": "125", "gui": "#af005f"}
+let s:lightMagenta = { "cterm": "201", "gui": "#ff00ff"}
 let s:vermilion      = { "cterm": "203", "gui": "#ff5f5f"}
 let s:lightVermilion = { "cterm": "217", "gui": "#ffafaf"}
-
+" 黄
+let s:yellow      = {"cterm":"11", "gui":"#ffff00"}
 let s:orange       = { "cterm": "130", "gui": "#af5f00"}
+let s:orange2      = { "cterm": "172", "gui": "#d75f00"}
 let s:diluteOrange = { "cterm": "94", "gui": "#af5f00"}
 
 " ---------------------------------
@@ -252,11 +271,9 @@ function! s:setHighlight(group, fg, bg, attribute)
 			\. " ctermbg=NONE guibg=NONE"
 			\. " "         . a:attribute
 	endif
-endfunction
 
-" ---------------------------------
-" シンタックス設定関数
-" ---------------------------------
+endfunction
+" --------------------------
 function! InitHighlight(mode)
 
 	let g:contrast_mode = "low"
@@ -334,7 +351,6 @@ function! SetDefaultDark()
 	" カラーテーマの設定
 	set background=dark
 	highlight clear
-	syntax reset
 
 	" 行番号
 	call s:setHighlight("LineNr", s:gray4, s:bg, "cterm=bold")
@@ -343,6 +359,7 @@ function! SetDefaultDark()
 	" カーソル行／列
 	call s:setHighlight("CursorLine",   "", s:cursorBg, "cterm=bold")
 	call s:setHighlight("CursorColumn", "", s:cursorBg, "cterm=bold")
+	call s:setHighlight("MatchParen", s:black2, s:lightPink, "cterm=bold")
 
 	" 文字
 	call s:setHighlight("Normal", s:fg, s:bg, "")
@@ -373,6 +390,12 @@ function! SetDefaultDark()
 	call s:setHighlight("Constant", s:magenta, s:bg, "")
 	call s:setHighlight("Number", s:vermilion, s:bg, "")
 
+	" C言語
+	call s:setHighlight("cUserOperator", s:orange2, s:bg, "")
+	call s:setHighlight("cUserOperator2", s:yellow, s:bg, "")
+	call s:setHighlight("cUserOperator3", s:gray8, s:bg, "")
+	call s:setHighlight("cUserFunction", s:lightCyan2, s:bg, "")
+
 	" シェルスクリプト
 	call s:setHighlight("shShellVariables", s:blueGreen, s:bg, "")
 	call s:setHighlight("shSetList", s:green, s:bg, "")
@@ -382,7 +405,7 @@ function! SetDefaultDark()
 	call s:setHighlight("PmenuSel", s:boldBlack, s:lightGreen2, "")
 
 	" 検索
-	call s:setHighlight("Search", s:fg, s:diluteBlue2, "term=reverse")
+	call s:setHighlight("Search", s:bg, s:lightVermilion, "term=reverse")
 
 	" Vim statusline
 	call s:setHighlight("ErrorMsg", s:white255, s:red, "term=standout")
@@ -415,7 +438,6 @@ function! SetDefaultLight()
 	" カラーテーマの設定
 	set background=light
 	highlight clear
-	syntax reset
 
 	" 行番号
 	call s:setHighlight("LineNr", s:darkRed, s:bg, "")
@@ -483,7 +505,6 @@ function! SetHighContrastDark()
 	" カラーテーマの設定
 	set background=dark
 	highlight clear
-	syntax reset
 
 	" 行番号
 	call s:setHighlight("LineNr", s:gray4, s:bg, "cterm=bold")
@@ -492,6 +513,7 @@ function! SetHighContrastDark()
 	" カーソル行／列
 	call s:setHighlight("CursorLine",   "", s:cursorBg, "cterm=bold")
 	call s:setHighlight("CursorColumn", "", s:cursorBg, "cterm=bold")
+	call s:setHighlight("MatchParen", s:black2, s:lightPink, "cterm=bold")
 
 	" 文字
 	call s:setHighlight("Normal", s:fg, s:bg, "cterm=bold")
@@ -522,6 +544,12 @@ function! SetHighContrastDark()
 	call s:setHighlight("Constant", s:magenta, s:bg, "")
 	call s:setHighlight("Number", s:vermilion, s:bg, "")
 
+	" C言語
+	call s:setHighlight("cUserOperator", s:orange2, s:bg, "")
+	call s:setHighlight("cUserOperator2", s:yellow, s:bg, "")
+	call s:setHighlight("cUserOperator3", s:gray8, s:bg, "")
+	call s:setHighlight("cUserFunction", s:lightCyan2, s:bg, "")
+
 	" シェルスクリプト
 	call s:setHighlight("shShellVariables", s:blueGreen, s:bg, "")
 	call s:setHighlight("shSetList", s:green, s:bg, "")
@@ -531,7 +559,7 @@ function! SetHighContrastDark()
 	call s:setHighlight("PmenuSel", s:boldBlack, s:lightGreen2, "")
 
 	" 検索
-	call s:setHighlight("Search", s:fg, s:diluteBlue2, "term=reverse")
+	call s:setHighlight("Search", s:bg, s:lightVermilion, "term=reverse")
 
 	" Vim statusline
 	call s:setHighlight("ErrorMsg", s:white255, s:red, "term=standout")
@@ -562,7 +590,6 @@ function! SetHighContrastLight()
 	" カラーテーマの設定
 	set background=light
 	highlight clear
-	syntax reset
 
 	" 行番号
 	call s:setHighlight("LineNr", s:darkRed, s:bg, "")
@@ -621,7 +648,7 @@ endfunction
 " 初期化処理
 " ---------------------------------
 call InitHighlight(g:mode)
-
+autocmd syntax * call SetMySyntax()
 
 " ==================================================================
 " ヤンクした文字列をクリップボードと連携
