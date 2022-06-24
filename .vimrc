@@ -173,6 +173,21 @@ nnoremap <F12> :tabnew
 nnoremap <C-F12> :tabnew<CR>:Explore<CR>:echomsg "Please push the \<Enter\> on the file you want to open."<CR>
 
 
+" ==================================================================
+" カーソルの設定
+" ==================================================================
+if has('vim_starting')
+
+	" 挿入モード -> 非点滅 縦棒
+	let &t_SI .= "\e[6 q"
+
+	" ノーマルモード -> 非点滅 ブロック
+	let &t_EI .= "\e[2 q"
+
+	" 置換モード -> 非点滅 下線
+	let &t_SR .= "\e[4 q"
+endif
+
 
 " ==================================================================
 " 色の定義
@@ -445,6 +460,7 @@ function! SetDarkTheme(fg, bg, cursorBg, statuslineFg, statuslineBg, commandline
 	call s:setHighlight("String",  s:blue, a:bg, "")
 
 	" 記号／特殊文字
+	call s:setHighlight("Special", s:lightGray, a:bg, "")
 	call s:setHighlight("SpecialKey", s:gray2, a:bg, "")
 	call s:setHighlight("SpecialChar", s:blueGreen, a:bg, "")
 
@@ -676,9 +692,9 @@ autocmd syntax * call SetMySyntax()
 " ヤンクした文字列をクリップボードと連携
 " ==================================================================
 if has('win32') || has('win64') || has('mac')
-  set clipboard=unnamed           " Windows, Macの場合はプライマリ("*)と共有
+	set clipboard=unnamed           " Windows, Macの場合はプライマリ("*)と共有
 else
-  set clipboard=unnamedplus       " Linuxの場合はクリップボード（"+）と共有
+	set clipboard=unnamedplus       " Linuxの場合はクリップボード（"+）と共有
 endif
 
 
