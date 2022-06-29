@@ -52,9 +52,31 @@ set diffopt=filler,context:10000  " difftoolでの表示行数の指定
 " ==================================================================
 " 汎用関数
 " ==================================================================
-" Echo error message
-function! EchoError(err)
+" Error messageの表示
+function! ErrorMessage(err)
     echohl ErrorMsg | echo a:err | echohl None
+endfunction
+
+" Separation
+function! Separate(symbol, symbol_num)
+	let l:symbol_line = ''
+	for i in range(1,a:symbol_num)
+		let l:symbol_line .= a:symbol
+	endfor
+	echo l:symbol_line
+endfunction
+
+" レジスタをクリアする関数
+function! ClearRegs()
+	let l:regs=split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-"', '\zs')
+	for r in l:regs
+		call setreg(r, [])
+	endfor
+endfunction
+
+" 任意のレジスタをクリアする関数
+function! ClearReg(reg)
+	call setreg(a:reg, [])
 endfunction
 
 " 現在のカーソル位置を記録
@@ -64,7 +86,7 @@ endfunction
 
 " Reload message
 function! ReloadMessage(message)
-	echo "🌀: ".a:message
+	echo '🌀: '.a:message
 endfunction
 
 " Toggle message
@@ -88,7 +110,7 @@ function! ToggleMessage(message, target, flag)
 			endif
 
 		elseif a:flag == 1
-			echo '🐍 '.a:message." OFF"
+			echo '🐍 '.a:message.' OFF'
 
 			" フラグ変更
 			if a:target == g:targetNo_cursor_line
@@ -100,10 +122,10 @@ function! ToggleMessage(message, target, flag)
 		endif
 
 	elseif a:target == 3
-		echo "🐬: set ".a:message." mode"
+		echo '🐬: set '.a:message.' mode'
 
 	elseif a:target == 4
-		echo "🐬: set ".a:message." contrast mode"
+		echo '🐬: set '.a:message.' contrast mode'
 
 	endif
 
@@ -222,21 +244,24 @@ inoremap <S-tab> <C-n>
 " <Insert>無効、iに置き換え
 inoremap <Insert> <Esc>li
 
-" CapsLockキー警告
-nnoremap J :call EchoError("😓: Jが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap K :call EchoError("😓: Kが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap H :call EchoError("😓: Hが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap L :call EchoError("😓: Lが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap D :call EchoError("😓: Dが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap U :call EchoError("😓: Uが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap R :call EchoError("😓: Rが入力されました。CapsLockキーを確認して下さい。")<CR>
-
 " Visual modeの開始（Windowsでの<C-v>(貼り付け)に対応）
 nnoremap <C-A-v> <C-v>
+
+" CapsLockキー警告
+nnoremap J :call ErrorMessage("😓: Jが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap K :call ErrorMessage("😓: Kが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap H :call ErrorMessage("😓: Hが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap L :call ErrorMessage("😓: Lが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap D :call ErrorMessage("😓: Dが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap U :call ErrorMessage("😓: Uが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap R :call ErrorMessage("😓: Rが入力されました。CapsLockキーを確認して下さい。")<CR>
 
 " インデントの調整
 vnoremap < <gv
 vnoremap > >gv
+
+" 無名レジスタ""にヤンクレジスタ"0の内容をコピー
+nnoremap <C-p> :let @"=@0<CR>
 
 " re-do
 nnoremap r <C-r>
@@ -247,6 +272,13 @@ nnoremap ? :call RecordCursorPos()<CR>:vimgrep //g %<Left><Left><Left><Left>
 " カーソル下の単語検索の際にvimgrepで検索
 nnoremap * :call RecordCursorPos()<CR>*N:vimgrep /<C-r><C-w>/g %<CR>:call VimGrepMovePos(t:pos)<CR>zz
 
+" Terminal
+if has('nvim')
+else
+	set termwinsize=15x0
+endif
+tnoremap <C-v> <C-w>N
+
 " vimdiffの変更行検索
 if &diff
 	nnoremap c ]c]ckzz
@@ -256,7 +288,7 @@ if &diff
 else
 	nnoremap c :cnext<CR>
 	nnoremap <S-c> :cprev<CR>
-	nnoremap ! :call VimGrepMovePos(t:pos)<CR>zz:echo '🐸: move to first select str (line '.t:pos[1].')'<CR>
+	nnoremap ! :call VimGrepMovePos(t:pos)<CR>zz:echo'🐸: move to first select str (line '.t:pos[1].')'<CR>
 endif
 
 " <S-Home>で行頭にカーソル合わせ
@@ -326,20 +358,20 @@ inoremap <C-PageDown> <Esc>l5<S-PageDown>i
 " ==================================================================
 " Fnキーショートカットの設定
 " ==================================================================
-" ハイライトOFF
+" ハイライトOFF＆カーソル位置の記録
 if has('reltime')
-	nnoremap <F1> :noh<CR>:set mouse=a<CR>:call DuckSwim(10,10,0.01)<CR>
+	nnoremap <F1> :noh<CR>:set mouse=a<CR>:call RecordCursorPos()<CR>:call DuckSwim(t:pos[1]/100,10,0.01)<CR>
 else
-	nnoremap <F1> :noh<CR>:set mouse=a<CR>:echo "🦆"<CR>
+	nnoremap <F1> :noh<CR>:set mouse=a<CR>:call RecordCursorPos()<CR>:echo'🦆'<CR>
 endif
 
 " カーソル行ハイライトのON/OFF
-nnoremap <F2> :set cursorline!<CR>:call ToggleMessage("↔: toggled cursor line", g:targetNo_cursor_line, g:cursor_line_flag)<CR>
-inoremap <F2> <Esc>l:set cursorline!<CR>:call ToggleMessage(1, "↔: toggled cursor line", g:targetNo_cursor_line, g:cursor_line_flag)<CR>i
+nnoremap <F2> :set cursorline!<CR>:call ToggleMessage("↔: cursor line has toggled to", g:targetNo_cursor_line, g:cursor_line_flag)<CR>
+inoremap <F2> <Esc>l:set cursorline!<CR>:call ToggleMessage(1, "↔: cursor line has toggled to", g:targetNo_cursor_line, g:cursor_line_flag)<CR>i
 
 " カーソル列ハイライトのON/OFF
-nnoremap <F3> :set cursorcolumn!<CR>:call ToggleMessage("↕: toggled cursor column", g:targetNo_cursor_column, g:cursor_column_flag)<CR>
-inoremap <F3> <Esc>l:set cursorcolumn!<CR>:call ToggleMessage("↕: toggled cursor column", g:targetNo_cursor_column, g:cursor_column_flag)<CR>i
+nnoremap <F3> :set cursorcolumn!<CR>:call ToggleMessage("↕: cursor column has toggled to", g:targetNo_cursor_column, g:cursor_column_flag)<CR>
+inoremap <F3> <Esc>l:set cursorcolumn!<CR>:call ToggleMessage("↕: cursor column has toggled to", g:targetNo_cursor_column, g:cursor_column_flag)<CR>i
 
 " 置換ショートカットの設定
 nnoremap <F4> :%s///gc<Left><Left><Left><Left><C-r><C-w><Right>
@@ -348,10 +380,10 @@ vnoremap <F4> :s///gc<Left><Left><Left><Left>
 " Neovim/Vimで動作を分岐
 if has('nvim')
 	" ~/.config/nvim/init.vimの明示的な読み込み
-	nnoremap <F5> :source ~/.config/nvim/init.vim<CR>:noh<CR>:call ReloadMessage("reloaded init.vim")<CR>
+	nnoremap <F5> :source ~/.config/nvim/init.vim<CR>:noh<CR>:call ReloadMessage("reload init.vim")<CR>
 else
 	" ~/.vimrcの明示的な読み込み
-	nnoremap <C-F5> :source ~/.vimrc<CR>:noh<CR>:call ReloadMessage("reloaded .vimrc")<CR>
+	nnoremap <C-F5> :source ~/.vimrc<CR>:noh<CR>:call ReloadMessage("reload .vimrc")<CR>
 endif
 
 " git difftoolにvimdiffを設定している場合に差分情報を表示/終了
@@ -372,25 +404,23 @@ inoremap <C-F7> <Esc>l:call ToggleHighlight(g:mode)<CR>:call ToggleMessage(g:mod
 
 " ハイライトグループの確認
 nnoremap <F8> g<C-g>
-nnoremap <S-F8> :echo "🦖: ".synIDattr(synID(line("."), col("."), 1), "name")<CR>
+nnoremap <S-F8> :echo'🦖: '.synIDattr(synID(line('.'), col('.'), 1), 'name')<CR>
 
 " Terminal
-if has('nvim')
-else
-	set termwinsize=15x0
-endif
+nnoremap <F9> <C-w>w
+tnoremap <F9> <C-w>w
 nnoremap <C-F9> :bo terminal<CR>
 inoremap <C-F9> <Esc>l:bo terminal<CR>
 tnoremap <C-F9> exit<CR>
 
-nnoremap <F9> <C-w>w
-tnoremap <F9> <C-w>w
-
-tnoremap <C-v> <C-w>N
+" レジスタ
+nnoremap <F10> :reg<CR>:call Separate('-',40)<CR>:echo'🌼: <C-F10>  clear any select register'<CR>:echo'🌼: <S-F10>  clear ALL registers'<CR>:call Separate('-',40)<CR>
+nnoremap <C-F10> :call ClearReg('')<Left><Left>
+nnoremap <S-F10> :call ClearRegs()<CR>:echo'🌼: all register has been cleared.'<CR>
 
 " 新規タブ
 nnoremap <F12> :tabnew 
-nnoremap <C-F12> :tabnew<CR>:Explore<CR>:echo "📁: Please push the \<Enter\> on the file you want to open."<CR>
+nnoremap <C-F12> :tabnew<CR>:Explore<CR>:echo'📁: Please push the \<Enter\> on the file you want to open.'<CR>
 
 
 " ==================================================================
