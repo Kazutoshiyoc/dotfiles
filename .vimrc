@@ -59,7 +59,7 @@ endfunction
 
 " 現在のカーソル位置を記録
 function! RecordCursorPos()
-	let t:current_cursor_pos = getpos('.')
+	let t:pos = getpos('.')
 endfunction
 
 " Reload message
@@ -241,21 +241,22 @@ vnoremap > >gv
 " re-do
 nnoremap r <C-r>
 
-" vimgrepで検索（検索時にマッチ数を表示）
-nnoremap ? :vimgrep //g %<Left><Left><Left><Left>
+" 検索時にマッチ数を表示する
+nnoremap ? :call RecordCursorPos()<CR>:vimgrep //g %<Left><Left><Left><Left>
 
 " カーソル下の単語検索の際にvimgrepで検索
-nnoremap * :call RecordCursorPos()<CR>*N:vimgrep /<C-r><C-w>/g %<CR>:call VimGrepMovePos(t:current_cursor_pos)<CR>zz
+nnoremap * :call RecordCursorPos()<CR>*N:vimgrep /<C-r><C-w>/g %<CR>:call VimGrepMovePos(t:pos)<CR>zz
 
 " vimdiffの変更行検索
 if &diff
-	nnoremap c ]c]ck
-	nnoremap <S-c> [ck
+	nnoremap c ]c]ckzz
+	nnoremap <S-c> [ckzz
 
 " vimgrepの検索
 else
 	nnoremap c :cnext<CR>
 	nnoremap <S-c> :cprev<CR>
+	nnoremap ! :call VimGrepMovePos(t:pos)<CR>zz:echo '🐸: move to first select str (line '.t:pos[1].')'<CR>
 endif
 
 " <S-Home>で行頭にカーソル合わせ
