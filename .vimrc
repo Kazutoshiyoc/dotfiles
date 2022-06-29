@@ -106,100 +106,6 @@ endfunction
 
 
 " ==================================================================
-" 入力補助
-" ==================================================================
-
-" 括弧補完
-inoremap {} {}<Left>
-inoremap { {}<Left>
-
-inoremap {}<Enter> {};<Left><Left>
-inoremap {<Enter> {<CR><Tab><End><CR><Backspace>}<Up><End>
-
-inoremap (<Space> ()<Space><Left><Left>
-inoremap () ()<Left>
-inoremap ( ()<Left>
-
-inoremap ()<Enter> ();<Left><Left>
-inoremap (<Enter> ("\n");<Left><Left><Left><Left><Left>
-
-inoremap [] []<Left>
-inoremap [ []<Left>
-
-" <S-tab>で予測候補入力
-inoremap <S-tab> <C-n>
-
-" <Insert>無効、iに置き換え
-inoremap <Insert> <Esc>li
-
-" CapsLockキー警告
-nnoremap J :call EchoError("😓: Jが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap K :call EchoError("😓: Kが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap H :call EchoError("😓: Hが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap L :call EchoError("😓: Lが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap D :call EchoError("😓: Dが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap U :call EchoError("😓: Uが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap R :call EchoError("😓: Rが入力されました。CapsLockキーを確認して下さい。")<CR>
-
-" Visual modeの開始（Windowsでの<C-v>(貼り付け)に対応）
-nnoremap <A-v> <C-v>
-
-" インデントの調整
-vnoremap < <gv
-vnoremap > >gv
-
-" re-do
-nnoremap r <C-r>
-
-" カーソル下の単語検索の際にカーソル行を維持
-nnoremap * *N
-
-" vimdiffの変更行検索
-if &diff
-	nnoremap c ]c]ck
-	nnoremap <S-c> [ck
-endif
-
-" <S-Home>で行頭にカーソル合わせ
-inoremap <S-Home> <Esc>^<Insert>
-nnoremap <S-Home> ^
-vnoremap <S-Home> ^
-
-" <C-Home><C-End>でタブの切り替え
-nnoremap <C-Home> :tabNext<CR>
-nnoremap <C-End> :tabnext<CR>
-
-vnoremap <C-Home> <Esc>:tabNext<CR>
-vnoremap <C-End> <Esc>:tabnext<CR>
-
-inoremap <C-Home> <Esc>l:tabNext<CR>
-inoremap <C-End> <Esc>l:tabnext<CR>
-
-" <Control>押しながらだと3倍スクロール
-nnoremap <C-Left> 3<S-Left>
-inoremap <C-Left> <Esc>l3<S-Left>i
-nnoremap <C-Right> 3<S-Right>
-inoremap <C-Right> <Esc>l3<S-Right>i
-
-" <Shift>押しながらだと5倍スクロール<Control>押しながらだと20倍スクロール
-nnoremap <S-Up> 5k
-inoremap <S-Up> <Esc>l5ki
-nnoremap <C-Up> 20k
-inoremap <C-Up> <Esc>l20ki
-nnoremap <S-Down> 5j
-inoremap <S-Down> <Esc>l5ji
-nnoremap <C-Down> 20j
-inoremap <C-Down> <Esc>l20ji
-
-" <PageUp><PageDown>で画面スクロール
-nnoremap <PageUp> <C-Y>
-inoremap <PageUp> <Esc>l<C-Y>i
-nnoremap <PageDown> <C-E>
-inoremap <PageDown> <Esc>l<C-E>i
-
-
-
-" ==================================================================
 "   🦆 🦆   🦆    🦆 🦆   🦆   🦢    🦆     🦆 🦆
 " ==================================================================
 function! DuckSwim(duck_max, duck_space_max, swan_rate)
@@ -266,6 +172,125 @@ endfunction
 
 
 " ==================================================================
+" 入力補助
+" ==================================================================
+
+" 括弧補完
+inoremap {} {}<Left>
+inoremap { {}<Left>
+
+inoremap {}<Enter> {};<Left><Left>
+inoremap {<Enter> {<CR><Tab><End><CR><Backspace>}<Up><End>
+
+inoremap (<Space> ()<Space><Left><Left>
+inoremap () ()<Left>
+inoremap ( ()<Left>
+
+inoremap ()<Enter> ();<Left><Left>
+inoremap (<Enter> ("\n");<Left><Left><Left><Left><Left>
+
+inoremap [] []<Left>
+inoremap [ []<Left>
+
+" <S-tab>で予測候補入力
+inoremap <S-tab> <C-n>
+
+" <Insert>無効、iに置き換え
+inoremap <Insert> <Esc>li
+
+" CapsLockキー警告
+nnoremap J :call EchoError("😓: Jが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap K :call EchoError("😓: Kが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap H :call EchoError("😓: Hが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap L :call EchoError("😓: Lが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap D :call EchoError("😓: Dが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap U :call EchoError("😓: Uが入力されました。CapsLockキーを確認して下さい。")<CR>
+nnoremap R :call EchoError("😓: Rが入力されました。CapsLockキーを確認して下さい。")<CR>
+
+" Visual modeの開始（Windowsでの<C-v>(貼り付け)に対応）
+nnoremap <C-A-v> <C-v>
+
+" インデントの調整
+vnoremap < <gv
+vnoremap > >gv
+
+" re-do
+nnoremap r <C-r>
+
+" カーソル下の単語検索の際にカーソル行を維持
+nnoremap * *N
+
+" vimdiffの変更行検索
+if &diff
+	nnoremap c ]c]ck
+	nnoremap <S-c> [ck
+endif
+
+" <S-Home>で行頭にカーソル合わせ
+inoremap <S-Home> <Esc>^<Insert>
+nnoremap <S-Home> ^
+vnoremap <S-Home> ^
+
+" <C-Home><C-End>でタブの切り替え
+nnoremap <C-Home> :tabNext<CR>
+nnoremap <C-End> :tabnext<CR>
+
+vnoremap <C-Home> <Esc>:tabNext<CR>
+vnoremap <C-End> <Esc>:tabnext<CR>
+
+inoremap <C-Home> <Esc>l:tabNext<CR>
+inoremap <C-End> <Esc>l:tabnext<CR>
+
+" <Control>押しながらだと3倍スクロール
+nnoremap <C-Left> 3<S-Left>
+nnoremap <C-Right> 3<S-Right>
+
+inoremap <C-Left> <Esc>l3<S-Left>i
+inoremap <C-Right> <Esc>l3<S-Right>i
+
+" <Shift>押しながらだと5倍スクロール<Control>押しながらだと20倍スクロール
+nnoremap <S-Up> 5k
+nnoremap <C-Up> 20k
+nnoremap <S-Down> 5j
+nnoremap <C-Down> 20j
+
+inoremap <S-Up> <Esc>l5ki
+inoremap <C-Up> <Esc>l20ki
+inoremap <S-Down> <Esc>l5ji
+inoremap <C-Down> <Esc>l20ji
+
+" <Control><Alt>押しながら方向キーで画面位置を変更
+nnoremap <C-A-Up> zt
+nnoremap <C-A-Down> zb
+nnoremap <C-A-Left> zz
+nnoremap <C-A-Right> zz
+
+inoremap <C-A-Up> <Esc>lzti
+inoremap <C-A-Down> <Esc>lzbi
+inoremap <C-A-Left> <Esc>lzzi
+inoremap <C-A-Right> <Esc>lzzi
+
+vnoremap <C-A-Up> zb
+vnoremap <C-A-Down> zt
+vnoremap <C-A-Left> :<Backspace><Backspace><Backspace><Backspace><Backspace>'<<CR>V
+vnoremap <C-A-Right> :<Backspace><Backspace><Backspace><Backspace><Backspace>'><CR>V
+
+" <PageUp><PageDown>で画面スクロール
+nnoremap <PageUp> <C-Y>
+nnoremap <PageDown> <C-E>
+
+inoremap <PageUp> <Esc>l<C-Y>i
+inoremap <PageDown> <Esc>l<C-E>i
+
+" <Control>押しながら<PageUp><PageDown>で5倍ページ送り
+nnoremap <C-PageUp> 5<S-PageUp>
+nnoremap <C-PageDown> 5<S-PageDown>
+
+inoremap <C-PageUp> <Esc>l5<S-PageUp>i
+inoremap <C-PageDown> <Esc>l5<S-PageDown>i
+
+
+" ==================================================================
 " Fnキーショートカットの設定
 " ==================================================================
 " ハイライトOFF
@@ -305,10 +330,11 @@ endif
 
 " カラーテーマ／コントラストの切替
 nnoremap <F7> :call InitHighlight(g:mode)<CR>:noh<CR>:call ReloadMessage("reset highlight")<CR>
-inoremap <F7> <Esc>l:call InitHighlight(g:mode)<CR>:noh<CR>:call ReloadMessage("reset highlight")<CR>i
 nnoremap <S-F7> :call ToggleContrast(g:contrast_mode)<CR>:call ToggleMessage(g:contrast_mode, g:targetNo_contrast_mode, g:noflag)<CR>
-inoremap <S-F7> <Esc>l:call ToggleContrast(g:contrast_mode)<CR>:call ToggleMessage(g:contrast_mode, g:targetNo_contrast_mode, g:noflag)<CR>i
 nnoremap <C-F7> :call ToggleHighlight(g:mode)<CR>:call ToggleMessage(g:mode, g:targetNo_color_mode, g:noflag)<CR>
+
+inoremap <F7> <Esc>l:call InitHighlight(g:mode)<CR>:noh<CR>:call ReloadMessage("reset highlight")<CR>i
+inoremap <S-F7> <Esc>l:call ToggleContrast(g:contrast_mode)<CR>:call ToggleMessage(g:contrast_mode, g:targetNo_contrast_mode, g:noflag)<CR>i
 inoremap <C-F7> <Esc>l:call ToggleHighlight(g:mode)<CR>:call ToggleMessage(g:mode, g:targetNo_color_mode, g:noflag)<CR>i
 
 " ハイライトグループの確認
@@ -323,8 +349,10 @@ endif
 nnoremap <C-F9> :bo terminal<CR>
 inoremap <C-F9> <Esc>l:bo terminal<CR>
 tnoremap <C-F9> exit<CR>
+
 nnoremap <F9> <C-w>w
 tnoremap <F9> <C-w>w
+
 tnoremap <C-v> <C-w>N
 
 " 新規タブ
@@ -871,9 +899,12 @@ endif
 " マウスの動作設定
 " ==================================================================
 set mouse=a
+
+" ホイールスクロールで3行移動
 nnoremap <ScrollWheelUp> 3k
-inoremap <ScrollWheelUp> <Esc>l3ki
 nnoremap <ScrollWheelDown> 3j
+
+inoremap <ScrollWheelUp> <Esc>l3ki
 inoremap <ScrollWheelDown> <Esc>l3ji
 
 " 左クリックで対象ワードを検索
