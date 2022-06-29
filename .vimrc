@@ -7,7 +7,12 @@ set fileencoding=utf-8
 set noswapfile                    " スワップファイルは使わない
 
 set number                        " 行番号を表示する
+
 set cursorline                    " カーソルラインの表示
+let g:cursor_line_flag = 1
+"set cursorcolumn                  " カーソルカラムの表示
+let g:cursor_column_flag = 0
+
 set laststatus=2                  " ステータスラインの表示
 set showtabline=2                 " タブラインの表示
 set ruler                         " カーソルが何行目の何列目に置かれているかを表示する
@@ -45,13 +50,59 @@ set diffopt=filler,context:10000  " difftoolでの表示行数の指定
 
 
 " ==================================================================
-" Error表示関数
+" 汎用関数
 " ==================================================================
-" Error message
+" Echo error message
 function! EchoError(err)
     echohl ErrorMsg | echo a:err | echohl None
 endfunction
 
+" Reload message
+function! ReloadMessage(message)
+	echo "🌀: ".a:message
+endfunction
+
+" Toggle message
+let g:noflag = 0
+let g:targetNo_cursor_line   = 1
+let g:targetNo_cursor_column = 2
+let g:targetNo_color_mode    = 3
+let g:targetNo_contrast_mode = 4
+function! ToggleMessage(message, target, flag)
+
+	if a:target <= 2
+
+		if a:flag == 0
+			echo '🐍 '.a:message.' ON'
+
+			" フラグ変更
+			if a:target == g:targetNo_cursor_line
+				let g:cursor_line_flag = 1
+			elseif a:target == g:targetNo_cursor_column
+				let g:cursor_column_flag = 1
+			endif
+
+		elseif a:flag == 1
+			echo '🐍 '.a:message." OFF"
+
+			" フラグ変更
+			if a:target == g:targetNo_cursor_line
+				let g:cursor_line_flag = 0
+			elseif a:target == g:targetNo_cursor_column
+				let g:cursor_column_flag = 0
+			endif
+
+		endif
+
+	elseif a:target == 3
+		echo "🐬: set ".a:message." mode"
+
+	elseif a:target == 4
+		echo "🐬: set ".a:message." contrast mode"
+
+	endif
+
+endfunction
 
 
 " ==================================================================
@@ -87,7 +138,6 @@ nnoremap K :call EchoError("😓: Kが入力されました。CapsLockキーを�
 nnoremap H :call EchoError("😓: Hが入力されました。CapsLockキーを確認して下さい。")<CR>
 nnoremap L :call EchoError("😓: Lが入力されました。CapsLockキーを確認して下さい。")<CR>
 nnoremap D :call EchoError("😓: Dが入力されました。CapsLockキーを確認して下さい。")<CR>
-nnoremap Y :call EchoError("😓: Yが入力されました。CapsLockキーを確認して下さい。")<CR>
 nnoremap U :call EchoError("😓: Uが入力されました。CapsLockキーを確認して下さい。")<CR>
 nnoremap R :call EchoError("😓: Rが入力されました。CapsLockキーを確認して下さい。")<CR>
 
@@ -152,59 +202,59 @@ inoremap <PageDown> <Esc>l<C-E>i
 " ==================================================================
 "   🦆 🦆   🦆    🦆 🦆   🦆   🦢    🦆     🦆 🦆
 " ==================================================================
-function! DuckSwim(duck_max, duck_space_max)
+function! DuckSwim(duck_max, duck_space_max, swan_rate)
 
-	" 1-10の乱数で🦆数を決定
-	let a:match_end = matchend(reltimestr(reltime()), '\d\+\.') + 1
-	let a:duck_num = reltimestr(reltime())[a:match_end : ] % (a:duck_max -1 + 1) + 1
+	" 1~duck_maxの乱数で🦆数を決定
+	let l:match_end = matchend(reltimestr(reltime()), '\d\+\.') + 1
+	let l:duck_num = reltimestr(reltime())[l:match_end : ] % (a:duck_max -1 + 1) + 1
 
 	" 🦆行列の取得
-	let a:duck_line = ''
-	while a:duck_num > 0
+	let l:duck_line = ''
+	while l:duck_num > 0
 
-		" 0-10の乱数で🦆間隔を決定
-		let a:match_end = matchend(reltimestr(reltime()), '\d\+\.') + 1
-		let a:duck_space_num = reltimestr(reltime())[a:match_end : ] % (a:duck_space_max + 1)
+		" 0~duck_space_maxの乱数で🦆間隔を決定
+		let l:match_end = matchend(reltimestr(reltime()), '\d\+\.') + 1
+		let l:duck_space_num = reltimestr(reltime())[l:match_end : ] % (a:duck_space_max + 1)
 
 		" 🦆間隔の挿入
-		let a:duck_space = ''
-		for i in range(0,a:duck_space_num)
-			let a:duck_space .= ' '
+		let l:duck_space = ''
+		for i in range(0,l:duck_space_num)
+			let l:duck_space .= ' '
 		endfor
-		let a:duck_line .= a:duck_space . '🦆'
+		let l:duck_line .= l:duck_space . '🦆'
 
 		" 🦆数のデクリメント
-		let a:duck_num -= 1
+		let l:duck_num -= 1
 
-		" 稀に🦢が入る
-		let a:match_end = matchend(reltimestr(reltime()), '\d\+\.') + 1
-		let a:swan_flag = reltimestr(reltime())[a:match_end : ] % (a:duck_space_max + 1)
-		if a:swan_flag > 9
+		" swan_rateに応じて🦢が入る
+		let l:match_end = matchend(reltimestr(reltime()), '\d\+\.') + 1
+		let l:swan_flag = reltimestr(reltime())[l:match_end : ] % (a:duck_space_max + 1)
+		if l:swan_flag < a:duck_space_max * a:swan_rate
 			" 🦢間隔の決定
-			let a:match_end = matchend(reltimestr(reltime()), '\d\+\.') + 1
-			let a:swan_space_num = reltimestr(reltime())[a:match_end : ] % (a:duck_space_max + 1)
+			let l:match_end = matchend(reltimestr(reltime()), '\d\+\.') + 1
+			let l:swan_space_num = reltimestr(reltime())[l:match_end : ] % (a:duck_space_max + 1)
 
 			" 🦢間隔の挿入
-			let a:swan_space = ''
-			for i in range(0,a:swan_space_num)
-				let a:swan_space .= ' '
+			let l:swan_space = ''
+			for i in range(0,l:swan_space_num)
+				let l:swan_space .= ' '
 			endfor
-			let a:duck_line .= a:swan_space . '🦢'
+			let l:duck_line .= l:swan_space . '🦢'
 		endif
 
 		" 最終🦆後の間隔
-		let a:match_end = matchend(reltimestr(reltime()), '\d\+\.') + 1
-		let a:duck_space_num = reltimestr(reltime())[a:match_end : ] % (a:duck_space_max + 1)
-		let a:duck_space = ''
-		for i in range(0,a:duck_space_num)
-			let a:duck_space .= ' '
+		let l:match_end = matchend(reltimestr(reltime()), '\d\+\.') + 1
+		let l:duck_space_num = reltimestr(reltime())[l:match_end : ] % (a:duck_space_max + 1)
+		let l:duck_space = ''
+		for i in range(0,l:duck_space_num)
+			let l:duck_space .= ' '
 		endfor
-		let a:duck_line .= a:duck_space
+		let l:duck_line .= l:duck_space
 
 	endwhile
 
 	" 🦆行列の出力
-	call DrawDuck(a:duck_line)
+	call DrawDuck(l:duck_line)
 
 endfunction
 
@@ -220,18 +270,18 @@ endfunction
 " ==================================================================
 " ハイライトOFF
 if has('reltime')
-	nnoremap <F1> :noh<CR>:set mouse=a<CR>:call DuckSwim(10,10)<CR>
+	nnoremap <F1> :noh<CR>:set mouse=a<CR>:call DuckSwim(10,10,0.01)<CR>
 else
 	nnoremap <F1> :noh<CR>:set mouse=a<CR>:echo "🦆"<CR>
 endif
 
 " カーソル行ハイライトのON/OFF
-nnoremap <F2> :set cursorline!<CR>:echo "🐛: <->"<CR>
-inoremap <F2> <Esc>l:set cursorline!<CR>:echo "🐛: <->"<CR>i
+nnoremap <F2> :set cursorline!<CR>:call ToggleMessage("↔: toggled cursor line", g:targetNo_cursor_line, g:cursor_line_flag)<CR>
+inoremap <F2> <Esc>l:set cursorline!<CR>:call ToggleMessage(1, "↔: toggled cursor line", g:targetNo_cursor_line, g:cursor_line_flag)<CR>i
 
 " カーソル列ハイライトのON/OFF
-nnoremap <F3> :set cursorcolumn!<CR>:echo "🐛: ↕"<CR>
-inoremap <F3> <Esc>l:set cursorcolumn!<CR>:echo "🐛: ↕"<CR>i
+nnoremap <F3> :set cursorcolumn!<CR>:call ToggleMessage("↕: toggled cursor column", g:targetNo_cursor_column, g:cursor_column_flag)<CR>
+inoremap <F3> <Esc>l:set cursorcolumn!<CR>:call ToggleMessage("↕: toggled cursor column", g:targetNo_cursor_column, g:cursor_column_flag)<CR>i
 
 " 置換ショートカットの設定
 nnoremap <F4> :%s///gc<Left><Left><Left><Left><C-r><C-w><Right>
@@ -240,10 +290,10 @@ vnoremap <F4> :s///gc<Left><Left><Left><Left>
 " Neovim/Vimで動作を分岐
 if has('nvim')
 	" ~/.config/nvim/init.vimの明示的な読み込み
-	nnoremap <F5> :source ~/.config/nvim/init.vim<CR>:noh<CR>:echo "🌀: reloaded init.vim"<CR>
+	nnoremap <F5> :source ~/.config/nvim/init.vim<CR>:noh<CR>:call ReloadMessage("reloaded init.vim")<CR>
 else
 	" ~/.vimrcの明示的な読み込み
-	nnoremap <C-F5> :source ~/.vimrc<CR>:noh<CR>:echo "🌀: reloaded .vimrc"<CR>
+	nnoremap <C-F5> :source ~/.vimrc<CR>:noh<CR>:call ReloadMessage("reloaded .vimrc")<CR>
 endif
 
 " git difftoolにvimdiffを設定している場合に差分情報を表示/終了
@@ -254,19 +304,22 @@ if &diff
 endif
 
 " カラーテーマ／コントラストの切替
-nnoremap <F7> :call InitHighlight(g:mode)<CR>:noh<CR>:echo "🌀: reset highlight"<CR>
-inoremap <F7> <Esc>l:call InitHighlight(g:mode)<CR>:noh<CR>:echo "🌀: reset highlight"<CR>i
-nnoremap <S-F7> :call ToggleContrast(g:contrast_mode)<CR>
-inoremap <S-F7> <Esc>l:call ToggleContrast(g:contrast_mode)<CR>i
-nnoremap <C-F7> :call ToggleHighlight(g:mode)<CR>
-inoremap <C-F7> <Esc>l:call ToggleHighlight(g:mode)<CR>i
+nnoremap <F7> :call InitHighlight(g:mode)<CR>:noh<CR>:call ReloadMessage("reset highlight")<CR>
+inoremap <F7> <Esc>l:call InitHighlight(g:mode)<CR>:noh<CR>:call ReloadMessage("reset highlight")<CR>i
+nnoremap <S-F7> :call ToggleContrast(g:contrast_mode)<CR>:call ToggleMessage(g:contrast_mode, g:targetNo_contrast_mode, g:noflag)<CR>
+inoremap <S-F7> <Esc>l:call ToggleContrast(g:contrast_mode)<CR>:call ToggleMessage(g:contrast_mode, g:targetNo_contrast_mode, g:noflag)<CR>i
+nnoremap <C-F7> :call ToggleHighlight(g:mode)<CR>:call ToggleMessage(g:mode, g:targetNo_color_mode, g:noflag)<CR>
+inoremap <C-F7> <Esc>l:call ToggleHighlight(g:mode)<CR>:call ToggleMessage(g:mode, g:targetNo_color_mode, g:noflag)<CR>i
 
 " ハイライトグループの確認
 nnoremap <F8> g<C-g>
-nnoremap <C-F8> :echo "🦖: ".synIDattr(synID(line("."), col("."), 1), "name")<CR>
+nnoremap <S-F8> :echo "🦖: ".synIDattr(synID(line("."), col("."), 1), "name")<CR>
 
 " Terminal
-set termwinsize=15x0
+if has('nvim')
+else
+	set termwinsize=15x0
+endif
 nnoremap <C-F9> :bo terminal<CR>
 inoremap <C-F9> <Esc>l:bo terminal<CR>
 tnoremap <C-F9> exit<CR>
@@ -378,7 +431,7 @@ function! SetMyStatusLine()
 		let mode_color = 1
 
 	elseif mode() =~ 'c'
-		let mode_emoji = '❓'
+		let mode_emoji = '👻'
 		let mode_name  = 'Command'
 		let mode_color = 1
 
@@ -735,15 +788,15 @@ endfunction
 function! SetDefaultDark()
 
 	" デフォルトカラーの定義
-	let a:fg    = s:white
-	let a:bg    = s:black
-	let a:cursorBg = s:gray
-	let a:statuslineFg  = s:white255
-	let a:statuslineBg  = s:gray
-	let a:commandlineFg = s:lightGray4
-	let a:commandlineBg = s:gray
+	let l:fg    = s:white
+	let l:bg    = s:black
+	let l:cursorBg = s:gray
+	let l:statuslineFg  = s:white255
+	let l:statuslineBg  = s:gray
+	let l:commandlineFg = s:lightGray4
+	let l:commandlineBg = s:gray
 
-	call SetDarkTheme(a:fg, a:bg, a:cursorBg, a:statuslineFg, a:statuslineBg, a:commandlineFg, a:commandlineBg)
+	call SetDarkTheme(l:fg, l:bg, l:cursorBg, l:statuslineFg, l:statuslineBg, l:commandlineFg, l:commandlineBg)
 
 endfunction
 
@@ -751,15 +804,15 @@ endfunction
 function! SetDefaultLight()
 
 	" デフォルトカラーの定義
-	let a:fg    = s:black016
-	let a:bg    = s:white253
-	let a:cursorBg = s:white252
-	let a:statuslineFg  = s:white255
-	let a:statuslineBg  = s:gray
-	let a:commandlineFg = s:lightGray4
-	let a:commandlineBg = s:gray
+	let l:fg    = s:black016
+	let l:bg    = s:white253
+	let l:cursorBg = s:white252
+	let l:statuslineFg  = s:white255
+	let l:statuslineBg  = s:gray
+	let l:commandlineFg = s:lightGray4
+	let l:commandlineBg = s:gray
 
-	call SetLightTheme(a:fg, a:bg, a:cursorBg, a:statuslineFg, a:statuslineBg, a:commandlineFg, a:commandlineBg)
+	call SetLightTheme(l:fg, l:bg, l:cursorBg, l:statuslineFg, l:statuslineBg, l:commandlineFg, l:commandlineBg)
 
 endfunction
 
@@ -769,15 +822,15 @@ endfunction
 function! SetHighContrastDark()
 
 	" デフォルトカラーの定義
-	let a:fg    = s:white
-	let a:bg    = s:black234
-	let a:cursorBg = s:gray
-	let a:statuslineFg  = s:white255
-	let a:statuslineBg  = s:gray
-	let a:commandlineFg = s:lightGray4
-	let a:commandlineBg = s:gray
+	let l:fg    = s:white
+	let l:bg    = s:black234
+	let l:cursorBg = s:gray
+	let l:statuslineFg  = s:white255
+	let l:statuslineBg  = s:gray
+	let l:commandlineFg = s:lightGray4
+	let l:commandlineBg = s:gray
 
-	call SetDarkTheme(a:fg, a:bg, a:cursorBg, a:statuslineFg, a:statuslineBg, a:commandlineFg, a:commandlineBg)
+	call SetDarkTheme(l:fg, l:bg, l:cursorBg, l:statuslineFg, l:statuslineBg, l:commandlineFg, l:commandlineBg)
 
 endfunction
 
@@ -785,15 +838,15 @@ endfunction
 function! SetHighContrastLight()
 
 	" デフォルトカラーの定義
-	let a:fg    = s:black016
-	let a:bg    = s:white255
-	let a:cursorBg = s:white254
-	let a:statuslineFg  = s:white255
-	let a:statuslineBg  = s:gray
-	let a:commandlineFg = s:lightGray4
-	let a:commandlineBg = s:gray
+	let l:fg    = s:black016
+	let l:bg    = s:white255
+	let l:cursorBg = s:white254
+	let l:statuslineFg  = s:white255
+	let l:statuslineBg  = s:gray
+	let l:commandlineFg = s:lightGray4
+	let l:commandlineBg = s:gray
 
-	call SetLightTheme(a:fg, a:bg, a:cursorBg, a:statuslineFg, a:statuslineBg, a:commandlineFg, a:commandlineBg)
+	call SetLightTheme(l:fg, l:bg, l:cursorBg, l:statuslineFg, l:statuslineBg, l:commandlineFg, l:commandlineBg)
 
 endfunction
 
