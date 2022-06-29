@@ -57,6 +57,11 @@ function! EchoError(err)
     echohl ErrorMsg | echo a:err | echohl None
 endfunction
 
+" 現在のカーソル位置を記録
+function! RecordCursorPos()
+	let t:current_cursor_pos = getpos('.')
+endfunction
+
 " Reload message
 function! ReloadMessage(message)
 	echo "🌀: ".a:message
@@ -102,6 +107,25 @@ function! ToggleMessage(message, target, flag)
 
 	endif
 
+endfunction
+
+
+" ==================================================================
+" 特殊関数
+" ==================================================================
+" 指定の位置に存在するvimgrepの結果まで移動
+function! VimGrepMovePos(pos)
+	" 現在のカーソル位置を取得
+	let l:vimgrep_pos = getpos(".")
+
+	" カーソル位置とa:posが一致するまでcnext
+	while l:vimgrep_pos[1] < a:pos[1]
+		cnext
+		let l:vimgrep_pos = getpos('.')
+	endwhile
+
+	" カーソル位置を指定位置に移動
+	call setpos('.', a:pos)
 endfunction
 
 
@@ -217,13 +241,21 @@ vnoremap > >gv
 " re-do
 nnoremap r <C-r>
 
-" カーソル下の単語検索の際にカーソル行を維持
-nnoremap * *N
+" vimgrepで検索（検索時にマッチ数を表示）
+nnoremap ? :vimgrep //g %<Left><Left><Left><Left>
+
+" カーソル下の単語検索の際にvimgrepで検索
+nnoremap * :call RecordCursorPos()<CR>*N:vimgrep /<C-r><C-w>/g %<CR>:call VimGrepMovePos(t:current_cursor_pos)<CR>zz
 
 " vimdiffの変更行検索
 if &diff
 	nnoremap c ]c]ck
 	nnoremap <S-c> [ck
+
+" vimgrepの検索
+else
+	nnoremap c :cnext<CR>
+	nnoremap <S-c> :cprev<CR>
 endif
 
 " <S-Home>で行頭にカーソル合わせ
