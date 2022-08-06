@@ -288,12 +288,18 @@ if &diff
 else
 	nnoremap c :cnext<CR>
 	nnoremap <S-c> :cprev<CR>
-	nnoremap ! :call VimGrepMovePos(t:pos)<CR>zz:echo'🐸: move to first select str (line '.t:pos[1].')'<CR>
+	nnoremap ! :call VimGrepMovePos(t:pos)<CR>zz:echo'🐸: move to saved position (line '.t:pos[1].')'<CR>
 endif
 
-" <S-Home>で行頭にカーソル合わせ
-inoremap <S-Home> <Esc>^<Insert>
-nnoremap <S-Home> ^
+" <S-Left>, <S-Right>でVisual選択
+inoremap <S-Left> <Esc><C-v><Left>
+nnoremap <S-Left> <C-v><Left>
+inoremap <S-Right> <Esc><C-v><Right>
+nnoremap <S-Right> <C-v><Right>
+
+" <S-Home>で行頭までVisual選択
+inoremap <S-Home> <Esc><C-v>^
+nnoremap <S-Home> <C-v>^
 vnoremap <S-Home> ^
 
 " <C-Home><C-End>でタブの切り替え
@@ -421,6 +427,7 @@ nnoremap <S-F10> :call ClearRegs()<CR>:echo'🌼: all register has been cleared.
 " 新規タブ
 nnoremap <F12> :tabnew 
 nnoremap <C-F12> :tabnew<CR>:Explore<CR>:echo'📁: Please push the \<Enter\> on the file you want to open.'<CR>
+nnoremap <S-F12> :Explore<CR>
 
 
 " ==================================================================
@@ -783,8 +790,8 @@ function! SetDarkTheme(fg, bg, cursorBg, statuslineFg, statuslineBg, commandline
 
 	" Vim Tabline
 	call s:setHighlight("TabLine", a:fg, a:commandlineBg, "cterm=bold")
-	call s:setHighlight("TabLineSel", a:bg, s:lightGray4, "cterm=bold")
-	call s:setHighlight("TabLineFill", a:fg, a:bg, "cterm=bold")
+	call s:setHighlight("TabLineSel", a:fg, a:bg, "cterm=bold")
+	call s:setHighlight("TabLineFill", a:bg, a:commandlineBg, "cterm=bold")
 
 	" vimdiff
 	call s:setHighlight("DiffAdd", s:lightGreen, s:darkGreen, "")
@@ -885,7 +892,7 @@ function! SetDefaultDark()
 	let l:statuslineFg  = s:white255
 	let l:statuslineBg  = s:gray
 	let l:commandlineFg = s:lightGray4
-	let l:commandlineBg = s:gray
+	let l:commandlineBg = s:gray7
 
 	call SetDarkTheme(l:fg, l:bg, l:cursorBg, l:statuslineFg, l:statuslineBg, l:commandlineFg, l:commandlineBg)
 
@@ -919,7 +926,7 @@ function! SetHighContrastDark()
 	let l:statuslineFg  = s:white255
 	let l:statuslineBg  = s:gray
 	let l:commandlineFg = s:lightGray4
-	let l:commandlineBg = s:gray
+	let l:commandlineBg = s:gray4
 
 	call SetDarkTheme(l:fg, l:bg, l:cursorBg, l:statuslineFg, l:statuslineBg, l:commandlineFg, l:commandlineBg)
 
