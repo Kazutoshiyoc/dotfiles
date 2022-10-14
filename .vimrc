@@ -736,7 +736,7 @@ function! SetDarkTheme(fg, bg, cursorBg, statuslineFg, statuslineBg, commandline
 	" カーソル行／列
 	call s:setHighlight("CursorLine",   "", a:cursorBg, "cterm=bold")
 	call s:setHighlight("CursorColumn", "", a:cursorBg, "cterm=bold")
-	call s:setHighlight("MatchParen", s:black234, s:lightGreen2, "cterm=bold")
+	call s:setHighlight("MatchParen", s:lightGreen2, s:darkGreen, "cterm=bold")
 
 	" 文字
 	call s:setHighlight("Normal", a:fg, a:bg, "")
