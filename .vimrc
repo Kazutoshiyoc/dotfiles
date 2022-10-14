@@ -52,10 +52,20 @@ set diffopt=filler,context:10000  " difftoolでの表示行数の指定
 " ==================================================================
 " キーマップ変更
 " ==================================================================
-noremap @ '
-noremap ` "
-noremap " @
-noremap ' `
+nnoremap @ '
+nnoremap ` "
+nnoremap " @
+nnoremap ' `
+
+inoremap @ '
+inoremap ` "
+inoremap " @
+inoremap ' `
+
+vnoremap @ '
+vnoremap ` "
+vnoremap " @
+vnoremap ' `
 
 
 
