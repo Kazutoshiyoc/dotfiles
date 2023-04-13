@@ -45,6 +45,8 @@ set visualbell t_vb=              " ビープ音/ビジュアルベルを無効�
 
 set timeoutlen=500                " mapの入力の待ち時間
 
+set splitright                    " 新しいウィンドウを右側に作成
+
 set diffopt=filler,context:10000  " difftoolでの表示行数の指定
 
 
@@ -295,7 +297,8 @@ nnoremap * :call RecordCursorPos()<CR>*N:vimgrep /<C-r><C-w>/g %<CR>:call VimGre
 " Terminal
 if has('nvim')
 else
-	set termwinsize=15x0
+	" ターミナルサイズをウィンドウサイズに合わせる
+	set termwinsize="0*0"
 endif
 tnoremap <C-v> <C-w>N
 
@@ -435,9 +438,9 @@ nnoremap <S-F8> :echo'🦖: '.synIDattr(synID(line('.'), col('.'), 1), 'name')<C
 " Terminal
 nnoremap <F9> <C-w>w
 tnoremap <F9> <C-w>w
-nnoremap <C-F9> :bo terminal<CR>
-inoremap <C-F9> <Esc>l:bo terminal<CR>
-tnoremap <C-F9> exit<CR>
+nnoremap <C-F9> :vert terminal<CR>
+inoremap <C-F9> <Esc>l:vert terminal<CR>
+"tnoremap <C-F9> exit<CR>
 
 " レジスタ
 nnoremap <F10> :reg<CR>:call Separate('-',40)<CR>:echo'🌼: <C-F10>  clear any select register'<CR>:echo'🌼: <S-F10>  clear ALL registers'<CR>:call Separate('-',40)<CR>
