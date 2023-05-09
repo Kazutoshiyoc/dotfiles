@@ -20,8 +20,7 @@ set title                         " ウインドウのタイトルバーにフ�
 set showcmd                       " 入力中のコマンドを表示する
 
 set showmatch                     " 対応する括弧やブレースを表示する
-set list                          " 不可視文字を表示す
-"set nowrap                        " 行を折り返さない
+set list                          " 不可視文字を表示する
 set scrolloff=5                   " スクロール時の行のマージン
 
 set wildmenu                      " コマンドラインモードで<Tab>キーによるファイル名補完を有効にする
@@ -32,18 +31,16 @@ set hlsearch                      " 検索結果をハイライト表示する
 set wrapscan
 
 set tabstop=4                     " タブ文字の表示幅
-"set expandtab                     " タブ入力を複数の空白入力に置き換える
 set listchars=tab:>\ ,extends:<   " タブと行の続きを可視化する
 
 set shiftwidth=4                  " Vimが挿入するインデントの幅
 set autoindent                    " 改行時に前の行のインデントを継続する
-"set smartindent                  " 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
 set smarttab                      " 行頭の余白内で Tab を打ち込むと、'shiftwidth' の数だけインデントする
 
 set backspace=2                   " backspaceを有効にする
 set visualbell t_vb=              " ビープ音/ビジュアルベルを無効化
 
-set timeoutlen=500                " mapの入力の待ち時間
+set timeoutlen=300                " mapの入力の待ち時間[ms]
 
 set diffopt=filler,context:10000  " difftoolでの表示行数の指定
 
@@ -242,21 +239,22 @@ endfunction
 " ==================================================================
 
 " 括弧補完
-inoremap {} {}<Left>
 inoremap { {}<Left>
-
-inoremap {}<Enter> {};<Left><Left>
+inoremap {} {}<Left>
 inoremap {<Enter> {<CR><Tab><End><CR><Backspace>}<Up><End>
 
-inoremap (<Space> ()<Space><Left><Left>
-inoremap () ()<Left>
 inoremap ( ()<Left>
+inoremap () ()<Left>
+inoremap (( ();<Left><Left>
+inoremap (<Enter> ();<Left><Left>
+inoremap (<Space> (<Space><Space>)<Left><Left>
+inoremap (N ("\n");<Left><Left><Left><Left><Left>
+inoremap (D ("%d\n");<Left><Left><Left><Left><Left>
+inoremap (F ("%f\n");<Left><Left><Left><Left><Left>
+inoremap (S ("%s\n");<Left><Left><Left><Left><Left>
 
-inoremap ()<Enter> ();<Left><Left>
-inoremap (<Enter> ("\n");<Left><Left><Left><Left><Left>
-
-inoremap [] []<Left>
 inoremap [ []<Left>
+inoremap [] []<Left>
 
 " <S-tab>で予測候補入力
 inoremap <S-tab> <C-n>
