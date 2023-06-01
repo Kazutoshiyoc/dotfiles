@@ -292,6 +292,7 @@ nnoremap ? :call RecordCursorPos()<CR>:vimgrep //g %<Left><Left><Left><Left>
 " カーソル下の単語検索の際にvimgrepで検索
 nnoremap * :call RecordCursorPos()<CR>*N:vimgrep /<C-r><C-w>/g %<CR>:call VimGrepMovePos(t:pos)<CR>zz
 
+" ------------------------------------
 " Terminal
 if has('nvim')
 else
@@ -312,16 +313,16 @@ else
 	nnoremap ! :call VimGrepMovePos(t:pos)<CR>zz:echo'🐸: move to saved position (line '.t:pos[1].')'<CR>
 endif
 
-" <S-Left>, <S-Right>でVisual選択
-inoremap <S-Left> <Esc><C-v><Left>
-nnoremap <S-Left> <C-v><Left>
-inoremap <S-Right> <Esc><C-v><Right>
-nnoremap <S-Right> <C-v><Right>
+" ------------------------------------
+" <Home>で空白文字を含まない行頭へ移動
+nnoremap <Home> ^
+inoremap <Home> <Esc>^i
+vnoremap <Home> ^
 
-" <S-Home>で行頭までVisual選択
-inoremap <S-Home> <Esc><C-v>^
-nnoremap <S-Home> <C-v>^
-vnoremap <S-Home> ^
+" <S-Home>で行頭へ移動
+nnoremap <S-Home> <Home>
+inoremap <S-Home> <Esc><Home>i
+vnoremap <S-Home> <Home>
 
 " <C-Home><C-End>でタブの切り替え
 nnoremap <C-Home> :tabNext<CR>
@@ -333,24 +334,37 @@ vnoremap <C-End> <Esc>:tabnext<CR>
 inoremap <C-Home> <Esc>l:tabNext<CR>
 inoremap <C-End> <Esc>l:tabnext<CR>
 
-" <Control>押しながらだと3倍スクロール
-nnoremap <C-Left> 3<S-Left>
-nnoremap <C-Right> 3<S-Right>
+" ------------------------------------
+" <Shift> + 左右キーで単語単位（小区切り）の移動
+nnoremap <S-Left> b
+nnoremap <S-Right> w
 
-inoremap <C-Left> <Esc>l3<S-Left>i
-inoremap <C-Right> <Esc>l3<S-Right>i
+inoremap <S-Left> <Esc>bi
+inoremap <S-Right> <Esc>lwi
 
-" <Shift>押しながらだと5倍スクロール<Control>押しながらだと20倍スクロール
+" <Control> + 左右キーで単語単位（大区切り）の移動
+nnoremap <C-Left> B
+nnoremap <C-Right> W
+
+inoremap <C-Left> <Esc>Bi
+inoremap <C-Right> <Esc>lWi
+
+" ------------------------------------
+" <Shift> + 上下キーでスクロール5倍
 nnoremap <S-Up> 5k
-nnoremap <C-Up> 20k
 nnoremap <S-Down> 5j
-nnoremap <C-Down> 20j
 
 inoremap <S-Up> <Esc>l5ki
-inoremap <C-Up> <Esc>l20ki
 inoremap <S-Down> <Esc>l5ji
+
+" <Control>+上下キーでスクロール20倍
+nnoremap <C-Up> 20k
+nnoremap <C-Down> 20j
+
+inoremap <C-Up> <Esc>l20ki
 inoremap <C-Down> <Esc>l20ji
 
+" ------------------------------------
 " <Control><Alt>押しながら方向キーで画面位置を変更
 nnoremap <C-A-Up> zt
 nnoremap <C-A-Down> zb
@@ -367,6 +381,7 @@ vnoremap <C-A-Down> zt
 vnoremap <C-A-Left> :<Backspace><Backspace><Backspace><Backspace><Backspace>'<<CR>V
 vnoremap <C-A-Right> :<Backspace><Backspace><Backspace><Backspace><Backspace>'><CR>V
 
+" ------------------------------------
 " <PageUp><PageDown>で画面スクロール
 nnoremap <PageUp> <C-Y>
 nnoremap <PageDown> <C-E>
@@ -374,7 +389,7 @@ nnoremap <PageDown> <C-E>
 inoremap <PageUp> <Esc>l<C-Y>i
 inoremap <PageDown> <Esc>l<C-E>i
 
-" <Control>押しながら<PageUp><PageDown>で5倍ページ送り
+" <Control>押しながら<PageUp><PageDown>でページ送り5倍
 nnoremap <C-PageUp> 5<S-PageUp>
 nnoremap <C-PageDown> 5<S-PageDown>
 
@@ -438,7 +453,7 @@ nnoremap <F9> <C-w>w
 tnoremap <F9> <C-w>w
 nnoremap <C-F9> :vert terminal<CR>
 inoremap <C-F9> <Esc>l:vert terminal<CR>
-"tnoremap <C-F9> exit<CR>
+tnoremap <C-F9> exit<CR>
 
 " レジスタ
 nnoremap <F10> :reg<CR>:call Separate('-',40)<CR>:echo'🌼: <C-F10>  clear any select register'<CR>:echo'🌼: <S-F10>  clear ALL registers'<CR>:call Separate('-',40)<CR>
