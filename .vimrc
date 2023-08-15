@@ -435,18 +435,18 @@ if &diff
 	nnoremap :q :qa<CR>
 endif
 
-" カラーテーマ／コントラストの切替
-nnoremap <F7> :call InitHighlight(g:mode)<CR>:noh<CR>:call ReloadMessage("reset highlight")<CR>
-nnoremap <S-F7> :call ToggleContrast(g:contrast_mode)<CR>:call ToggleMessage(g:contrast_mode, g:targetNo_contrast_mode, g:noflag)<CR>
-nnoremap <C-F7> :call ToggleHighlight(g:mode)<CR>:call ToggleMessage(g:mode, g:targetNo_color_mode, g:noflag)<CR>
-
-inoremap <F7> <Esc>l:call InitHighlight(g:mode)<CR>:noh<CR>:call ReloadMessage("reset highlight")<CR>i
-inoremap <S-F7> <Esc>l:call ToggleContrast(g:contrast_mode)<CR>:call ToggleMessage(g:contrast_mode, g:targetNo_contrast_mode, g:noflag)<CR>i
-inoremap <C-F7> <Esc>l:call ToggleHighlight(g:mode)<CR>:call ToggleMessage(g:mode, g:targetNo_color_mode, g:noflag)<CR>i
-
 " ハイライトグループの確認
-nnoremap <F8> g<C-g>
-nnoremap <S-F8> :echo'🦖: '.synIDattr(synID(line('.'), col('.'), 1), 'name')<CR>
+nnoremap <F7> g<C-g>
+nnoremap <S-F7> :echo'🦖: '.synIDattr(synID(line('.'), col('.'), 1), 'name')<CR>
+
+" カラーテーマ／コントラストの切替
+nnoremap <F8> :call InitHighlight(g:mode)<CR>:noh<CR>:call ReloadMessage("reset highlight")<CR>
+nnoremap <S-F8> :call ToggleContrast(g:contrast_mode)<CR>:call ToggleMessage(g:contrast_mode, g:targetNo_contrast_mode, g:noflag)<CR>
+nnoremap <C-F8> :call ToggleHighlight(g:mode)<CR>:call ToggleMessage(g:mode, g:targetNo_color_mode, g:noflag)<CR>
+
+inoremap <F8> <Esc>l:call InitHighlight(g:mode)<CR>:noh<CR>:call ReloadMessage("reset highlight")<CR>i
+inoremap <S-F8> <Esc>l:call ToggleContrast(g:contrast_mode)<CR>:call ToggleMessage(g:contrast_mode, g:targetNo_contrast_mode, g:noflag)<CR>i
+inoremap <C-F8> <Esc>l:call ToggleHighlight(g:mode)<CR>:call ToggleMessage(g:mode, g:targetNo_color_mode, g:noflag)<CR>i
 
 " Terminal
 nnoremap <F9> <C-w>w
@@ -734,7 +734,7 @@ endfunction
 " ---------------------------------
 " カラースキーム
 " ---------------------------------
-function! SetDarkTheme(fg, bg, cursorBg, statuslineFg, statuslineBg, commandlineFg, commandlineBg)
+function! SetDarkTheme(fg, bg, cursorBg, statuslineFg, statuslineBg, commandlineFg, commandlineBg, commonAttribute)
 
 	let g:mode = "dark"
 
@@ -746,7 +746,7 @@ function! SetDarkTheme(fg, bg, cursorBg, statuslineFg, statuslineBg, commandline
 	set statusline=%!SetMyStatusLine()
 
 	" 行番号
-	call s:setHighlight("LineNr", s:gray4, a:bg, "cterm=bold")
+	call s:setHighlight("LineNr", s:gray4, a:bg, "cterm=bold"." ".a:commonAttribute)
 	call s:setHighlight("CursorLineNr", s:orange, a:bg, "cterm=bold")
 
 	" カーソル行／列
@@ -755,45 +755,45 @@ function! SetDarkTheme(fg, bg, cursorBg, statuslineFg, statuslineBg, commandline
 	call s:setHighlight("MatchParen", s:lightGreen2, s:darkGreen, "cterm=bold")
 
 	" 文字
-	call s:setHighlight("Normal", a:fg, a:bg, "")
-	call s:setHighlight("Visual", "", s:gray, "cterm=bold")
+	call s:setHighlight("Normal", a:fg, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("Visual", "", s:gray, "")
 
 	" 文字列
-	call s:setHighlight("Comment", s:gray7, a:bg, "")
-	call s:setHighlight("String",  s:blue, a:bg, "")
+	call s:setHighlight("Comment", s:gray7, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("String",  s:blue, a:bg, ""." ".a:commonAttribute)
 
 	" 記号／特殊文字
-	call s:setHighlight("Special", s:lightGray, a:bg, "")
-	call s:setHighlight("SpecialKey", s:gray2, a:bg, "")
-	call s:setHighlight("SpecialChar", s:blueGreen, a:bg, "")
+	call s:setHighlight("Special", s:lightGray, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("SpecialKey", s:gray2, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("SpecialChar", s:blueGreen, a:bg, ""." ".a:commonAttribute)
 
 	" プリプロセッサ命令
-	call s:setHighlight("PreProc", s:dilutePurple, a:bg, "")
-	call s:setHighlight("Include", s:purple, a:bg, "")
-	call s:setHighlight("Macro",   s:purple, a:bg, "")
-	call s:setHighlight("PreCondit", s:bluePurple, a:bg, "")
+	call s:setHighlight("PreProc", s:dilutePurple, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("Include", s:purple, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("Macro",   s:purple, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("PreCondit", s:bluePurple, a:bg, ""." ".a:commonAttribute)
 
 	" if, for, while, do
-	call s:setHighlight("Conditional", s:redPurple, a:bg, "")
-	call s:setHighlight("Repeat", s:redPurple, a:bg, "")
+	call s:setHighlight("Conditional", s:redPurple, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("Repeat", s:redPurple, a:bg, ""." ".a:commonAttribute)
 
 	" 型
-	call s:setHighlight("Type", s:green, a:bg, "")
+	call s:setHighlight("Type", s:green, a:bg, ""." ".a:commonAttribute)
 
 	" 定数
-	call s:setHighlight("Constant", s:magenta, a:bg, "")
-	call s:setHighlight("Number", s:vermilion, a:bg, "")
+	call s:setHighlight("Constant", s:magenta, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("Number", s:vermilion, a:bg, ""." ".a:commonAttribute)
 
 	" C言語
-	call s:setHighlight("cUserOperator", s:orange2, a:bg, "")
-	call s:setHighlight("cUserOperator2", s:yellow, a:bg, "")
-	call s:setHighlight("cUserOperator3", s:gray9, a:bg, "")
-	call s:setHighlight("cUserOperator4", s:white255, a:bg, "")
-	call s:setHighlight("cUserFunction", s:lightCyan2, a:bg, "")
+	call s:setHighlight("cUserOperator", s:orange2, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("cUserOperator2", s:yellow, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("cUserOperator3", s:gray9, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("cUserOperator4", s:white255, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("cUserFunction", s:lightCyan2, a:bg, ""." ".a:commonAttribute)
 
 	" シェルスクリプト
-	call s:setHighlight("shShellVariables", s:blueGreen, a:bg, "")
-	call s:setHighlight("shSetList", s:green, a:bg, "")
+	call s:setHighlight("shShellVariables", s:blueGreen, a:bg, ""." ".a:commonAttribute)
+	call s:setHighlight("shSetList", s:green, a:bg, ""." ".a:commonAttribute)
 
 	" Pmenu
 	call s:setHighlight("Pmenu", s:black016, s:gray3, "")
@@ -929,8 +929,9 @@ function! SetDefaultDark()
 	let l:statuslineBg  = s:gray
 	let l:commandlineFg = s:lightGray4
 	let l:commandlineBg = s:gray7
+	let l:commonAttribute = "ctermbg=none gui=none"
 
-	call SetDarkTheme(l:fg, l:bg, l:cursorBg, l:statuslineFg, l:statuslineBg, l:commandlineFg, l:commandlineBg)
+	call SetDarkTheme(l:fg, l:bg, l:cursorBg, l:statuslineFg, l:statuslineBg,l:commandlineFg, l:commandlineBg, l:commonAttribute)
 
 endfunction
 
@@ -963,8 +964,9 @@ function! SetHighContrastDark()
 	let l:statuslineBg  = s:gray
 	let l:commandlineFg = s:lightGray4
 	let l:commandlineBg = s:gray4
+	let l:commonAttribute = "ctermbg=".l:bg.cterm." guibg=".l:bg.gui
 
-	call SetDarkTheme(l:fg, l:bg, l:cursorBg, l:statuslineFg, l:statuslineBg, l:commandlineFg, l:commandlineBg)
+	call SetDarkTheme(l:fg, l:bg, l:cursorBg, l:statuslineFg, l:statuslineBg, l:commandlineFg, l:commandlineBg, l:commonAttribute)
 
 endfunction
 
